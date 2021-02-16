@@ -1,0 +1,82 @@
+/* stylelint-disable docusaurus/copyright-header */
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary-dark: rgb(33, 175, 144);
+  --ifm-color-primary-darker: rgb(31, 165, 136);
+  --ifm-color-primary-darkest: rgb(26, 136, 112);
+  --ifm-color-primary-light: rgb(70, 203, 174);
+  --ifm-color-primary-lighter: rgb(102, 212, 189);
+  --ifm-color-primary-lightest: rgb(146, 224, 208);
+  --ifm-code-font-size: 95%;
+}
+
+.docusaurus-highlight-code-line {
+  background-color: rgb(72, 77, 91);
+  display: block;
+  margin: 0 calc(-1 * var(--ifm-pre-padding));
+  padding: 0 var(--ifm-pre-padding);
+}
+
+html,
+body {
+  font-family: 'Verdana', 'Tahoma', 'Geneva', sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif;
+  font-weight: 400;
+  margin: 10px 0;
+  color: inherit;
+  line-height: 1.25;
+}
+
+.w3-container {
+  padding-top: 70px;
+  padding-bottom: 70px;
+}
+
+.bg-1 {
+  background-color: #25c2a0;
+  color: #ffffff;
+}
+
+.bg-2 {
+  background-color: #303846;
+  color: #ffffff;
+}
+
+.bg-3 {
+  background-color: #ffffff;
+  color: #555555;
+}
+
+.bg-4 {
+  background-color: #2f2f2f;
+  color: #fff;
+}
+
+.title-1 {
+  font-size: 3rem;
+}
+
+.subtitle-1 {
+  font-size: 1.6rem;
+}
+
+.margin-bt-4 {
+  margin-bottom: 45px;
+}

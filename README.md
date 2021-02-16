@@ -1,5 +1,5 @@
 # bampouris-eu
 
-My personal Web Page made with Bootstrap.
+This website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
 
-Visit it on [bampouris.eu](https://www.bampouris.eu)
+Visit it on [bampouris.eu](https://www.bampouris.eu).
