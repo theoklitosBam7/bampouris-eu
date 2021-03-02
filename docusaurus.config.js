@@ -1,6 +1,6 @@
 module.exports = {
   title: 'Theoklitos Bampouris',
-  tagline: 'Software Developer Angular & Node.js | Assistant IT Advisor @ EY',
+  tagline: 'Software Developer (Angular & Node.js) @ EY | Co-organizer @ Angular Athens Meetup',
   url: 'https://www.bampouris.eu',
   baseUrl: '/',
   onBrokenLinks: 'throw',

@@ -4,29 +4,9 @@ import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import './styles.scss';
 
-const socials = [
-  {
-    url: 'https://www.linkedin.com/in/theoklitosbam7',
-    icon: 'fab fa-linkedin',
-  },
-  {
-    url: 'https://twitter.com/theoklitosBam7',
-    icon: 'fab fa-twitter',
-  },
-  {
-    url: 'https://github.com/theoklitosBam7',
-    icon: 'fab fa-github',
-  },
-];
-
-const duties = [
-  { title: 'Angular, Node.js' },
-  { title: 'Business requirements analysis' },
-  { title: 'Application design and development' },
-  { title: 'Technical documentation' },
-  { title: 'Testing and debugging software' },
-  { title: 'Production troubleshooting and support' },
-];
+import { socials } from '../../constants/socials';
+import { skills } from '../../constants/skills';
+import { gitHubStats } from '../../constants/gitHubStats';
 
 function Social({ url, icon }): JSX.Element {
   const toUrl = useBaseUrl(url);
@@ -43,15 +23,20 @@ function Social({ url, icon }): JSX.Element {
   );
 }
 
-function Duties({ title }): JSX.Element {
+function Skills({ title, url, logo }): JSX.Element {
   return (
     <React.Fragment>
-      <li>
-        <span className="fa-li">
-          <i className="fas fa-check-square"></i>
-        </span>
-        {title}.
-      </li>
+      <a href={url} target="_blank">
+        <img src={logo} alt={title} style={{ margin: '16px', width: '50px', height: '50px' }} />
+      </a>
+    </React.Fragment>
+  );
+}
+
+function GitStats({ title, url }): JSX.Element {
+  return (
+    <React.Fragment>
+      <img src={url} alt={title} style={{ margin: '8px' }} />
     </React.Fragment>
   );
 }
@@ -73,35 +58,47 @@ function Home(): JSX.Element {
         <section className="w3-container bg-2">
           <h3 className="subtitle-1 margin-bt-4 w3-center">What Am I?</h3>
           <div className="w3-row">
-            <p>
-              Software Developer with working experience in Insurance and Banking Projects. I develop new features for
-              the business's applications, maintaining at the same time the existing ones.
-            </p>
-            <p>
-              I’m a continuous learner of design patterns and architectures with cutting-edge technologies, focusing on
-              results and delivering on time.
-            </p>
-
-            {duties && duties.length > 0 && (
-              <React.Fragment>
-                {' '}
-                <p>Main technologies and duties involved on project:</p>
-                <ul className="fa-ul">
-                  {duties.map((dutie, idx) => (
-                    <Duties key={idx} {...dutie} />
-                  ))}
-                </ul>
-              </React.Fragment>
-            )}
-
-            <p>
-              Last but not least, I’m a{' '}
-              <a href="https://www.linux.com" target="_blank">
-                Linux
-              </a>{' '}
-              lover.
-            </p>
+            <div className="w3-col s12 w3-left">
+              <p>
+                Software Developer with working experience in Insurance and Banking Projects. I develop new features for
+                the business's applications, maintaining at the same time the existing ones.
+              </p>
+              <p>
+                I’m a continuous learner of design patterns and architectures with cutting-edge technologies, focusing
+                on results and delivering on time.
+              </p>
+            </div>
           </div>
+
+          {skills && skills.length > 0 && (
+            <React.Fragment>
+              <div className="w3-row">
+                <h3 className="subtitle-1 w3-center">Languages and Tools</h3>
+              </div>
+              <div className="w3-row margin-1">
+                <div className="w3-col w3-left">
+                  {skills.map((skill, idx) => (
+                    <Skills key={idx} {...skill} />
+                  ))}
+                </div>
+              </div>
+            </React.Fragment>
+          )}
+
+          {gitHubStats && gitHubStats.length > 0 && (
+            <React.Fragment>
+              <div className="w3-row margin-1">
+                <h3 className="subtitle-1 w3-center">GitHub Stats</h3>
+              </div>
+              <div className="w3-row">
+                <div className="w3-col w3-left">
+                  {gitHubStats.map((stat, idx) => (
+                    <GitStats key={idx} {...stat} />
+                  ))}
+                </div>
+              </div>
+            </React.Fragment>
+          )}
         </section>
 
         {socials && socials.length > 0 && (
