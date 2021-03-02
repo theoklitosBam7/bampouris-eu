@@ -2,6 +2,7 @@ import React from 'react';
 import Layout from '@theme/Layout';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import useThemeContext from '@theme/hooks/useThemeContext';
 import './styles.scss';
 
 import { socials } from '../../constants/socials';
@@ -41,27 +42,43 @@ function GitStats({ title, url }): JSX.Element {
   );
 }
 
+function HeaderEl(props: any) {
+  const { isDarkTheme } = useThemeContext();
+
+  return (
+    <div className={`w3-container w3-row ${isDarkTheme ? 'bg-1-darkest' : 'bg-1'} ${props.suplClass}`}>
+      {props.children}
+    </div>
+  );
+}
+
+function SectionEl(props: any) {
+  const { isDarkTheme } = useThemeContext();
+
+  return <div className={`w3-container ${isDarkTheme ? 'bg-4' : 'bg-5'} ${props.suplClass}`}>{props.children}</div>;
+}
+
 function Home(): JSX.Element {
   const context = useDocusaurusContext();
   const { siteConfig = {} } = context;
 
   return (
     <Layout title={`Hello from ${siteConfig.title}`} description={siteConfig.customFields.description}>
-      <header className="w3-row w3-container bg-1">
+      <HeaderEl suplClass="null">
         <div className="w3-col s12 w3-center">
           <h1 className="title-1 margin-bt-4">{siteConfig.title}</h1>
           <img className="margin-bt-4 tb-avatar" src={siteConfig.customFields.avatar} width="350" height="350" />
           <h3 className="subtitle-1">{siteConfig.tagline}</h3>
         </div>
-      </header>
+      </HeaderEl>
       <main className="main-landing">
-        <section className="w3-container bg-2">
+        <SectionEl suplClass="null">
           <h3 className="subtitle-1 margin-bt-4 w3-center">What Am I?</h3>
           <div className="w3-row">
             <div className="w3-col s12 w3-left">
+              <p>Software Developer with working experience in Insurance and Banking Projects.</p>
               <p>
-                Software Developer with working experience in Insurance and Banking Projects. I develop new features for
-                the business's applications, maintaining at the same time the existing ones.
+                I develop new features for the business applications, maintaining at the same time the existing ones.
               </p>
               <p>
                 I’m a continuous learner of design patterns and architectures with cutting-edge technologies, focusing
@@ -99,17 +116,17 @@ function Home(): JSX.Element {
               </div>
             </React.Fragment>
           )}
-        </section>
+        </SectionEl>
 
         {socials && socials.length > 0 && (
-          <section className="w3-container w3-center socials">
+          <SectionEl suplClass={`w3-center socials`}>
             <h3 className="subtitle-1 margin-bt-4">Where To Find Me?</h3>
             <div className="w3-row">
               {socials.map((item, idx) => (
                 <Social key={idx} {...item} />
               ))}
             </div>
-          </section>
+          </SectionEl>
         )}
       </main>
     </Layout>
