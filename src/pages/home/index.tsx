@@ -2,12 +2,12 @@ import React from 'react';
 import Layout from '@theme/Layout';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
-import useThemeContext from '@theme/hooks/useThemeContext';
 import './styles.scss';
 
 import { socials } from '../../constants/socials';
 import { skills } from '../../constants/skills';
 import { gitHubStats } from '../../constants/gitHubStats';
+import { SectionElement } from '../../elements/SectionElement';
 
 function Social({ url, icon }): JSX.Element {
   const toUrl = useBaseUrl(url);
@@ -42,37 +42,21 @@ function GitStats({ title, url }): JSX.Element {
   );
 }
 
-function HeaderEl(props: any) {
-  const { isDarkTheme } = useThemeContext();
-
-  return (
-    <div className={`w3-container w3-row ${isDarkTheme ? 'bg-1-darkest' : 'bg-1'} ${props.suplClass}`}>
-      {props.children}
-    </div>
-  );
-}
-
-function SectionEl(props: any) {
-  const { isDarkTheme } = useThemeContext();
-
-  return <div className={`w3-container ${isDarkTheme ? 'bg-4' : 'bg-5'} ${props.suplClass}`}>{props.children}</div>;
-}
-
 function Home(): JSX.Element {
   const context = useDocusaurusContext();
   const { siteConfig = {} } = context;
 
   return (
     <Layout title={`Hello from ${siteConfig.title}`} description={siteConfig.customFields.description}>
-      <HeaderEl suplClass="null">
+      <SectionElement elemClass={`w3-container w3-row`} lightThemeCls={`bg-1`} darkThemeCls={`bg-1-darkest`}>
         <div className="w3-col s12 w3-center">
           <h1 className="title-1 margin-bt-4">{siteConfig.title}</h1>
           <img className="margin-bt-4 tb-avatar" src={siteConfig.customFields.avatar} width="350" height="350" />
           <h3 className="subtitle-1">{siteConfig.tagline}</h3>
         </div>
-      </HeaderEl>
+      </SectionElement>
       <main className="main-landing">
-        <SectionEl suplClass="null">
+        <SectionElement elemClass={`w3-container`} lightThemeCls={`bg-5`} darkThemeCls={`bg-4`}>
           <h3 className="subtitle-1 margin-bt-4 w3-center">What Am I?</h3>
           <div className="w3-row">
             <div className="w3-col s12 w3-left">
@@ -116,17 +100,17 @@ function Home(): JSX.Element {
               </div>
             </React.Fragment>
           )}
-        </SectionEl>
+        </SectionElement>
 
         {socials && socials.length > 0 && (
-          <SectionEl suplClass={`w3-center socials`}>
+          <SectionElement elemClass={`w3-container w3-center socials`} lightThemeCls={`bg-5`} darkThemeCls={`bg-4`}>
             <h3 className="subtitle-1 margin-bt-4">Where To Find Me?</h3>
             <div className="w3-row">
               {socials.map((item, idx) => (
                 <Social key={idx} {...item} />
               ))}
             </div>
-          </SectionEl>
+          </SectionElement>
         )}
       </main>
     </Layout>
