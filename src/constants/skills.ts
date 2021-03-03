@@ -1,4 +1,10 @@
-export const skills = [
+type skillType = {
+  title: string;
+  url: string;
+  logo: string;
+};
+
+export const skills: skillType[] = [
   {
     title: 'Angular',
     url: 'https://angular.io/',

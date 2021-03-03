@@ -1,4 +1,9 @@
-export const gitHubStats = [
+type gitHubStatType = {
+  title: string;
+  url: string;
+};
+
+export const gitHubStats: gitHubStatType[] = [
   {
     title: 'top-langs',
     url:

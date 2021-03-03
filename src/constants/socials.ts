@@ -1,4 +1,9 @@
-export const socials = [
+type socialType = {
+  url: string;
+  icon: string;
+};
+
+export const socials: socialType[] = [
   {
     url: 'https://www.linkedin.com/in/theoklitosbam7',
     icon: 'fab fa-linkedin',
