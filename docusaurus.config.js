@@ -14,7 +14,7 @@ module.exports = {
       title: null,
       logo: {
         alt: 'My Site Logo',
-        src: 'https://tb-projphotos.netlify.app/avatars/favicon.png',
+        src: 'img/favicon.png',
       },
       items: [
         { to: 'home', label: 'Home', position: 'left' },
@@ -51,7 +51,7 @@ module.exports = {
     ],
   ],
   customFields: {
-    avatar: 'https://tb-projphotos.netlify.app/avatars/avatar1.jpg',
+    avatar: 'img/avatar1.jpg',
     description:
       'Personal web page by Theoklitos Bampouris who lives in Athens (Greece), working as an Software Developer.',
   },
