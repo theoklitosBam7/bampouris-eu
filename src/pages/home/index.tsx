@@ -51,7 +51,12 @@ function Home(): JSX.Element {
       <SectionElement elemClass={`w3-container w3-row`} lightThemeCls={`bg-1`} darkThemeCls={`bg-1-darkest`}>
         <div className="w3-col s12 w3-center">
           <h1 className="title-1 margin-bt-4">{siteConfig.title}</h1>
-          <img className="margin-bt-4 tb-avatar" src={siteConfig.customFields.avatar} width="350" height="350" />
+          <img
+            className="margin-bt-4 tb-avatar"
+            src={useBaseUrl(siteConfig.customFields.avatar)}
+            width="350"
+            height="350"
+          />
           <h3 className="subtitle-1">{siteConfig.tagline}</h3>
         </div>
       </SectionElement>
