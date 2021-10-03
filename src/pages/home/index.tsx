@@ -8,7 +8,6 @@ import { socials } from '../../constants/socials';
 import { SectionElement } from '../../elements/SectionElement';
 import './styles.scss';
 
-
 function Social({ url, icon }): JSX.Element {
   const toUrl = useBaseUrl(url);
   return (
@@ -64,7 +63,7 @@ function Home(): JSX.Element {
         <SectionElement elemClass={`w3-container`} lightThemeCls={`bg-5`} darkThemeCls={`bg-4`}>
           <h3 className="subtitle-1 margin-bt-4 w3-center">What Am I?</h3>
           <div className="w3-row">
-            <div className="w3-col s12 w3-left">
+            <div className="w3-col s12 w3-center">
               <p>Software Engineer with front-end web development orientation.</p>
               <p>
                 I participate in analysis, design and implementation of the new features for the company’s web
@@ -83,7 +82,7 @@ function Home(): JSX.Element {
                 <h3 className="subtitle-1 w3-center">Languages and Tools</h3>
               </div>
               <div className="w3-row margin-1">
-                <div className="w3-col w3-left">
+                <div className="w3-col w3-center">
                   {skills.map((skill, idx) => (
                     <Skills key={idx} {...skill} />
                   ))}
@@ -98,7 +97,7 @@ function Home(): JSX.Element {
                 <h3 className="subtitle-1 w3-center">GitHub Stats</h3>
               </div>
               <div className="w3-row">
-                <div className="w3-col w3-left">
+                <div className="w3-col w3-center">
                   {gitHubStats.map((stat, idx) => (
                     <GitStats key={idx} {...stat} />
                   ))}
