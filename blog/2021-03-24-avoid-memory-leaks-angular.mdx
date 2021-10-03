@@ -1,10 +1,7 @@
 ---
 slug: avoid-memory-leaks-angular
 title: Avoid Memory Leaks in Angular
-author: Theoklitos Bampouris
-author_title: Software Developer @ EY
-author_url: https://twitter.com/theoklitosBam7
-author_image_url: https://tb-projphotos.netlify.app/avatars/avatar1.jpg
+authors: theoklitos
 tags: [angular, rxjs, observables]
 draft: false
 ---
@@ -181,7 +178,7 @@ Using the `AsyncPipe` there is no need neither to `.subscribe()` nor to `.unsubs
 We won't stand in each of them. We'll see only the usage of [takeUntil](https://rxjs-dev.firebaseapp.com/api/operators/takeUntil) operator.
 > Lets values pass until a second Observable, notifier, emits a value. Then, it completes.
 
-At first, I'd like to mention the dangers as described in this article: [RxJS: Avoiding takeUntil Leaks](https://ncjamieson.com/avoiding-takeuntil-leaks/). `takeUntil` operator has to be (usually) the last operator in the `pipe`. 
+At first, I'd like to mention the dangers as described in this article: [RxJS: Avoiding takeUntil Leaks](https://ncjamieson.com/avoiding-takeuntil-leaks/). `takeUntil` operator has to be (usually) the last operator in the `pipe`.
 > If the `takeUntil` operator is placed before an operator that involves a subscription to another observable source, the subscription to that source might not be unsubscribed when `takeUntil` receives its notification.
 
 [Live Example](https://stackblitz.com/github/theoklitosBam7/ng-unsubscribe-examples/tree/4-takeuntil)
@@ -279,7 +276,7 @@ We have the exact same result as the previous one! We can provide an instance of
 ## Conclusions
 
 Eventually, I think that the preferable way to manage our RxJS subscriptions is by using `takeUntil` operator via an Angular service. Some benefits are:
-  
+
   - Less code
   - Fires a completion event when we kill our stream
   - Less chance to forget `.unsubscribe()` or `.next()`, `.complete()` methods in the `ngOnDestroy()` implementation

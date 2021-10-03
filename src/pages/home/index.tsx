@@ -1,13 +1,13 @@
-import React from 'react';
-import Layout from '@theme/Layout';
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import useBaseUrl from '@docusaurus/useBaseUrl';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import Layout from '@theme/Layout';
+import React from 'react';
+import { gitHubStats } from '../../constants/gitHubStats';
+import { skills } from '../../constants/skills';
+import { socials } from '../../constants/socials';
+import { SectionElement } from '../../elements/SectionElement';
 import './styles.scss';
 
-import { socials } from '../../constants/socials';
-import { skills } from '../../constants/skills';
-import { gitHubStats } from '../../constants/gitHubStats';
-import { SectionElement } from '../../elements/SectionElement';
 
 function Social({ url, icon }): JSX.Element {
   const toUrl = useBaseUrl(url);
@@ -65,13 +65,14 @@ function Home(): JSX.Element {
           <h3 className="subtitle-1 margin-bt-4 w3-center">What Am I?</h3>
           <div className="w3-row">
             <div className="w3-col s12 w3-left">
-              <p>Software Developer with working experience in Insurance and Banking Projects.</p>
+              <p>Software Engineer with front-end web development orientation.</p>
               <p>
-                I develop new features for the business applications, maintaining at the same time the existing ones.
+                I participate in analysis, design and implementation of the new features for the company’s web
+                applications, maintaining at the same time the existing ones.
               </p>
               <p>
                 I’m a continuous learner of design patterns and architectures with cutting-edge technologies, focusing
-                on results and delivering on time.
+                on quality and delivering on time.
               </p>
             </div>
           </div>

@@ -1,6 +1,6 @@
 module.exports = {
   title: 'Theoklitos Bampouris',
-  tagline: 'Software Developer (Angular & Node.js) @ EY | Co-organizer @ Angular Athens Meetup',
+  tagline: 'Software Engineer | Co-organizer @ Angular Athens Meetup',
   url: 'https://www.bampouris.eu',
   baseUrl: '/',
   onBrokenLinks: 'throw',
@@ -41,6 +41,8 @@ module.exports = {
       {
         docs: false,
         blog: {
+          path: 'blog',
+          authorsMapPath: 'authors.yml',
           showReadingTime: true,
           editUrl: 'https://github.com/theoklitosBam7/bampouris-eu/edit/master/',
         },
@@ -53,7 +55,7 @@ module.exports = {
   customFields: {
     avatar: 'img/avatar1.jpg',
     description:
-      'Personal web page by Theoklitos Bampouris who lives in Athens (Greece), working as an Software Developer.',
+      'Personal web page by Theoklitos Bampouris who lives in Athens (Greece), working as an Software Engineer.',
   },
   stylesheets: [
     {
