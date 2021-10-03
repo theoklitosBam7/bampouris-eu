@@ -43,19 +43,18 @@ function GitStats({ title, url }): JSX.Element {
 
 function Home(): JSX.Element {
   const context = useDocusaurusContext();
-  const { siteConfig = {} } = context;
+  const { siteConfig } = context;
+  const CUSTOM_FIELDS = {
+    description: siteConfig.customFields.description as string,
+    avatar: siteConfig.customFields.avatar as string,
+  };
 
   return (
-    <Layout title={`Hello from ${siteConfig.title}`} description={siteConfig.customFields.description}>
+    <Layout title={`Hello from ${siteConfig.title}`} description={CUSTOM_FIELDS.description}>
       <SectionElement elemClass={`w3-container w3-row`} lightThemeCls={`bg-1`} darkThemeCls={`bg-1-darkest`}>
         <div className="w3-col s12 w3-center">
           <h1 className="title-1 margin-bt-4">{siteConfig.title}</h1>
-          <img
-            className="margin-bt-4 tb-avatar"
-            src={useBaseUrl(siteConfig.customFields.avatar)}
-            width="350"
-            height="350"
-          />
+          <img className="margin-bt-4 tb-avatar" src={useBaseUrl(CUSTOM_FIELDS.avatar)} width="350" height="350" />
           <h3 className="subtitle-1">{siteConfig.tagline}</h3>
         </div>
       </SectionElement>
