@@ -14,7 +14,7 @@ function Social({ url, icon }): JSX.Element {
     <React.Fragment>
       {toUrl && (
         <div className="w3-col s4">
-          <a href={toUrl} target="_blank">
+          <a href={toUrl} target="_blank" rel="noreferrer">
             <i className={icon} style={{ fontSize: 65 }}></i>
           </a>
         </div>
@@ -26,7 +26,7 @@ function Social({ url, icon }): JSX.Element {
 function Skills({ title, url, logo }): JSX.Element {
   return (
     <React.Fragment>
-      <a href={url} target="_blank">
+      <a href={url} target="_blank" rel="noreferrer">
         <img src={logo} alt={title} style={{ margin: '16px', width: '50px', height: '50px' }} />
       </a>
     </React.Fragment>
@@ -54,7 +54,13 @@ function Home(): JSX.Element {
       <SectionElement elemClass={`w3-container w3-row`} lightThemeCls={`bg-1`} darkThemeCls={`bg-1-darkest`}>
         <div className="w3-col s12 w3-center">
           <h1 className="title-1 margin-bt-4">{siteConfig.title}</h1>
-          <img className="margin-bt-4 tb-avatar" src={useBaseUrl(CUSTOM_FIELDS.avatar)} width="350" height="350" />
+          <img
+            className="margin-bt-4 tb-avatar"
+            src={useBaseUrl(CUSTOM_FIELDS.avatar)}
+            alt="avatar_image"
+            width="350"
+            height="350"
+          />
           <h3 className="subtitle-1">{siteConfig.tagline}</h3>
         </div>
       </SectionElement>

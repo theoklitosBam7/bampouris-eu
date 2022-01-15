@@ -6,8 +6,7 @@ type gitHubStatType = {
 export const gitHubStats: gitHubStatType[] = [
   {
     title: 'top-langs',
-    url:
-      'https://github-readme-stats.vercel.app/api/top-langs?username=theoklitosbam7&show_icons=true&theme=radical&locale=en&layout=compact',
+    url: 'https://github-readme-stats.vercel.app/api/top-langs?username=theoklitosbam7&show_icons=true&theme=radical&locale=en&layout=compact',
   },
   {
     title: 'theoklitosbam7a',
