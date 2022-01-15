@@ -21,7 +21,7 @@
     "lint:fix": "yarn lint --fix",
     "typecheck": "tsc",
     "prepare": "husky install",
-    "precommit": "pretty-quick --staged && [ $? -eq 0 ] && typecheck && [ $? -eq 0 ] && lint-staged",
+    "precommit": "yarn run typecheck && [ $? -eq 0 ] && pretty-quick --staged && [ $? -eq 0 ] && lint-staged",
     "commitmsg": "commitlint --edit $1"
   },
   "dependencies": {
