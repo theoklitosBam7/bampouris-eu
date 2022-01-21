@@ -44,7 +44,7 @@ module.exports = {
           path: 'blog',
           authorsMapPath: 'authors.yml',
           showReadingTime: true,
-          editUrl: 'https://github.com/theoklitosBam7/bampouris-eu/edit/master/',
+          editUrl: 'https://github.com/theoklitosBam7/bampouris-eu/edit/main/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.scss'),
