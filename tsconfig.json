@@ -3,8 +3,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "skipLibCheck": true,
-    "skipDefaultLibCheck": true
+    "lib": ["DOM", "ESNext"],
+    "resolveJsonModule": true,
+    "strict": true
   },
-  "include": ["src/"],
+  "include": ["src/", "docusaurus.config.js"],
   "exclude": ["node_modules", "tmp"]
 }

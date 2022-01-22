@@ -45,8 +45,8 @@ function Home(): JSX.Element {
   const context = useDocusaurusContext();
   const { siteConfig } = context;
   const CUSTOM_FIELDS = {
-    description: siteConfig.customFields.description as string,
-    avatar: siteConfig.customFields.avatar as string,
+    description: siteConfig.customFields?.description as string,
+    avatar: siteConfig.customFields?.avatar as string,
   };
 
   return (

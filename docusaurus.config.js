@@ -1,6 +1,9 @@
+// @ts-check
+
 const isDeployPreview = !!process.env.NETLIFY && process.env.CONTEXT === 'deploy-preview';
 
-module.exports = {
+/** @type {import('@docusaurus/types').Config} */
+const config = {
   title: 'Theoklitos Bampouris',
   tagline: 'Software Engineer | Co-organizer @ Angular Athens Meetup',
   url: 'https://www.bampouris.eu',
@@ -11,32 +14,34 @@ module.exports = {
   organizationName: 'theoklitosBam7',
   projectName: 'bampouris-eu',
   plugins: ['docusaurus-plugin-sass'],
-  themeConfig: {
-    navbar: {
-      title: null,
-      logo: {
-        alt: 'My Site Logo',
-        src: 'img/favicon.png',
-      },
-      items: [
-        { to: 'home', label: 'Home', position: 'left' },
-        { to: 'blog', label: 'Blog', position: 'left' },
-        {
-          href: 'https://github.com/theoklitosBam7/bampouris-eu',
-          label: 'GitHub',
-          position: 'right',
+  themeConfig:
+    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+    ({
+      navbar: {
+        logo: {
+          alt: 'My Site Logo',
+          src: 'img/favicon.png',
         },
-      ],
-    },
-    footer: {
-      style: 'light',
-      copyright: `Copyright © ${new Date().getFullYear()} Theoklitos Bampouris.`,
-    },
-  },
+        items: [
+          { to: 'home', label: 'Home', position: 'left' },
+          { to: 'blog', label: 'Blog', position: 'left' },
+          {
+            href: 'https://github.com/theoklitosBam7/bampouris-eu',
+            label: 'GitHub',
+            position: 'right',
+          },
+        ],
+      },
+      footer: {
+        style: 'light',
+        copyright: `Copyright © ${new Date().getFullYear()} Theoklitos Bampouris.`,
+      },
+    }),
   presets: [
     [
       '@docusaurus/preset-classic',
-      {
+      /** @type {import('@docusaurus/preset-classic').Options} */
+      ({
         docs: false,
         blog: {
           path: 'blog',
@@ -53,7 +58,7 @@ module.exports = {
               anonymizeIP: true,
             }
           : undefined,
-      },
+      }),
     ],
   ],
   customFields: {
@@ -72,3 +77,5 @@ module.exports = {
     },
   ],
 };
+
+module.exports = config;
