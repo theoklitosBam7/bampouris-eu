@@ -1,3 +1,5 @@
+const isDeployPreview = !!process.env.NETLIFY && process.env.CONTEXT === 'deploy-preview';
+
 module.exports = {
   title: 'Theoklitos Bampouris',
   tagline: 'Software Engineer | Co-organizer @ Angular Athens Meetup',
@@ -30,10 +32,6 @@ module.exports = {
       style: 'light',
       copyright: `Copyright © ${new Date().getFullYear()} Theoklitos Bampouris.`,
     },
-    gtag: {
-      trackingID: 'UA-115207331-1',
-      anonymizeIP: true,
-    },
   },
   presets: [
     [
@@ -49,6 +47,12 @@ module.exports = {
         theme: {
           customCss: require.resolve('./src/css/custom.scss'),
         },
+        gtag: !isDeployPreview
+          ? {
+              trackingID: 'UA-115207331-1',
+              anonymizeIP: true,
+            }
+          : undefined,
       },
     ],
   ],
