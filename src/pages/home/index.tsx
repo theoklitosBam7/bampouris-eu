@@ -13,11 +13,9 @@ function Social({ url, icon }): JSX.Element {
   return (
     <React.Fragment>
       {toUrl && (
-        <div className="w3-col s4">
-          <a href={toUrl} target="_blank" rel="noreferrer">
-            <i className={icon} style={{ fontSize: 65 }}></i>
-          </a>
-        </div>
+        <a href={toUrl} target="_blank" rel="noreferrer">
+          <i className={icon} style={{ fontSize: 65 }}></i>
+        </a>
       )}
     </React.Fragment>
   );
@@ -51,11 +49,11 @@ function Home(): JSX.Element {
 
   return (
     <Layout title={`Hello from ${siteConfig.title}`} description={CUSTOM_FIELDS.description}>
-      <SectionElement elemClass={`w3-container w3-row`} lightThemeCls={`bg-1`} darkThemeCls={`bg-1-darkest`}>
-        <div className="w3-col s12 w3-center">
-          <h1 className="title-1 margin-bt-4">{siteConfig.title}</h1>
+      <SectionElement elemClass={`row text--center padding--lg`} lightThemeCls={`bg-1`} darkThemeCls={`bg-1-darkest`}>
+        <div className="col col--12">
+          <h1 className="title-1">{siteConfig.title}</h1>
           <img
-            className="margin-bt-4 tb-avatar"
+            className="tb-avatar"
             src={useBaseUrl(CUSTOM_FIELDS.avatar)}
             alt="avatar_image"
             width="350"
@@ -65,63 +63,53 @@ function Home(): JSX.Element {
         </div>
       </SectionElement>
       <main className="main-landing">
-        <SectionElement elemClass={`w3-container`} lightThemeCls={`bg-5`} darkThemeCls={`bg-4`}>
-          <h3 className="subtitle-1 margin-bt-4 w3-center">What Am I?</h3>
-          <div className="w3-row">
-            <div className="w3-col s12 w3-center">
-              <p>Software Engineer with front-end web development orientation.</p>
-              <p>
-                I participate in analysis, design and implementation of the new features for the company’s web
-                applications, maintaining at the same time the existing ones.
-              </p>
-              <p>
-                I’m a continuous learner of design patterns and architectures with cutting-edge technologies, focusing
-                on quality and delivering on time.
-              </p>
-            </div>
+        <SectionElement elemClass={`row text--center padding--lg`} lightThemeCls={`bg-5`} darkThemeCls={`bg-4`}>
+          <div className="col col--12 margin-bottom--md">
+            <h3 className="subtitle-1">What Am I?</h3>
+            <p>Software Engineer with front-end web development orientation.</p>
+            <p>
+              I participate in analysis, design and implementation of the new features for the company’s web
+              applications, maintaining at the same time the existing ones.
+            </p>
+            <p>
+              I’m a continuous learner of design patterns and architectures with cutting-edge technologies, focusing on
+              quality and delivering on time.
+            </p>
           </div>
 
           {skills && skills.length > 0 && (
-            <React.Fragment>
-              <div className="w3-row">
-                <h3 className="subtitle-1 w3-center">Languages and Tools</h3>
+            <div className="col col--12 margin-bottom--md">
+              <h3 className="subtitle-1">Languages and Tools</h3>
+              <div className="row items--center justify--evenly">
+                {skills.map((skill, idx) => (
+                  <Skills key={idx} {...skill} />
+                ))}
               </div>
-              <div className="w3-row margin-1">
-                <div className="w3-col w3-center">
-                  {skills.map((skill, idx) => (
-                    <Skills key={idx} {...skill} />
-                  ))}
-                </div>
-              </div>
-            </React.Fragment>
+            </div>
           )}
 
           {gitHubStats && gitHubStats.length > 0 && (
-            <React.Fragment>
-              <div className="w3-row margin-1">
-                <h3 className="subtitle-1 w3-center">GitHub Stats</h3>
+            <div className="col col--12 margin-bottom--md">
+              <h3 className="subtitle-1">GitHub Stats</h3>
+              <div className="row items--center justify--evenly">
+                {gitHubStats.map((stat, idx) => (
+                  <GitStats key={idx} {...stat} />
+                ))}
               </div>
-              <div className="w3-row">
-                <div className="w3-col w3-center">
-                  {gitHubStats.map((stat, idx) => (
-                    <GitStats key={idx} {...stat} />
-                  ))}
-                </div>
+            </div>
+          )}
+
+          {socials && socials.length > 0 && (
+            <div className="col col--12 margin-vert--lg socials">
+              <h3 className="subtitle-1">Where To Find Me?</h3>
+              <div className="row items--center justify--evenly">
+                {socials.map((item, idx) => (
+                  <Social key={idx} {...item} />
+                ))}
               </div>
-            </React.Fragment>
+            </div>
           )}
         </SectionElement>
-
-        {socials && socials.length > 0 && (
-          <SectionElement elemClass={`w3-container w3-center socials`} lightThemeCls={`bg-5`} darkThemeCls={`bg-4`}>
-            <h3 className="subtitle-1 margin-bt-4">Where To Find Me?</h3>
-            <div className="w3-row">
-              {socials.map((item, idx) => (
-                <Social key={idx} {...item} />
-              ))}
-            </div>
-          </SectionElement>
-        )}
       </main>
     </Layout>
   );

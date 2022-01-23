@@ -68,10 +68,6 @@ const config = {
   },
   stylesheets: [
     {
-      href: 'https://www.w3schools.com/w3css/4/w3.css',
-      type: 'text/css',
-    },
-    {
       href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css',
       type: 'text/css',
     },

@@ -1,5 +1,7 @@
+import { ReactNode } from 'react';
+
 export interface SectionElementProps {
-  children: React.ReactNode;
+  children: ReactNode;
   elemClass?: string;
   lightThemeCls?: string;
   darkThemeCls?: string;
