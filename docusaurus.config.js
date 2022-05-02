@@ -5,7 +5,7 @@ const isDeployPreview = !!process.env.NETLIFY && process.env.CONTEXT === 'deploy
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Theoklitos Bampouris',
-  tagline: 'Software Engineer | Co-organizer @ Angular Athens Meetup',
+  tagline: 'Software Engineer',
   url: 'https://www.bampouris.eu',
   baseUrl: '/',
   onBrokenLinks: 'throw',
