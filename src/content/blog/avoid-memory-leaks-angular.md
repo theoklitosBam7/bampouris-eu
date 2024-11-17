@@ -1,25 +1,22 @@
 ---
-slug: avoid-memory-leaks-angular
-title: Avoid Memory Leaks in Angular
-authors: theoklitos
-tags: [angular, rxjs, observables]
-draft: false
+title: "Avoid Memory Leaks in Angular"
+description: "Avoid memory leaks in Angular"
+pubDate: "2021-03-24"
+heroImage: "/blog-placeholder-1.jpg"
 ---
 
 Almost five years ago, Ben Lesh wrote a nice article with title: [RxJS: Don’t Unsubscribe](https://medium.com/@benlesh/rxjs-dont-unsubscribe-6753ed4fda87). The author of course doesn't tell us to never care about our `Subscription`. He means that we must find a way that we don't have to perform `.unsubscribe()` manually in each one. Let's start our mission!
-
-<!--truncate-->
 
 ## Our Road Map
 
 The lifetime of some global components, such as AppComponent, is the same as the lifetime of the app itself. If we know that we're dealing with such a case it is acceptable to `.subscribe()` to an Observable without providing any memory leak guard step. However, handle memory leaks during the implementation of an Angular application is a critical task for every developer. We'll begin our quest with showing what we mean with **memory leak** and we'll proceed solving the problem at first with the "traditional" way of `.unsubscribe()`, until we explore our preferable pattern.
 
-  - [The Bad Open Subscriptions](#the-bad-open-subscription)
-  - [Unsubscribe the Old Way](#unsubscribe-the-old-way)
-  - [The Async Pipe](#the-async-pipe)
-  - [The RxJS Operators](#the-rxjs-operators)
-  - [The DestroyService](#the-destroyservice)
-  - [Conclusions](#conclusions)
+- [The Bad Open Subscriptions](#the-bad-open-subscription)
+- [Unsubscribe the Old Way](#unsubscribe-the-old-way)
+- [The Async Pipe](#the-async-pipe)
+- [The RxJS Operators](#the-rxjs-operators)
+- [The DestroyService](#the-destroyservice)
+- [Conclusions](#conclusions)
 
 ## The Bad Open Subscriptions
 
@@ -48,6 +45,7 @@ When we navigate to `/second` path, `FirstComponent` has been destroyed. However
 ## Unsubscribe the Old Way
 
 A straightforward way to solve to above problem is to implement the [lifecycle hook](https://angular.io/guide/lifecycle-hooks) method `ngOnDestroy()`. As we read from the official documentation:
+
 > ...Unsubscribe Observables and detach event handlers to avoid memory leaks...
 
 ```ts title="first.component.ts"
@@ -144,6 +142,7 @@ Using a parent `Subscription` we don't have to care about plenty of properties a
 ## The Async Pipe
 
 [AsyncPipe](https://angular.io/api/common/AsyncPipe) kick ass! It has no rival when we want to display data "reactively" in our component's template.
+
 > The async pipe subscribes to an Observable or Promise and returns the latest value it has emitted. When a new value is emitted, the async pipe marks the component to be checked for changes. When the component gets destroyed, the async pipe unsubscribes automatically to avoid potential memory leaks.
 
 [Live Example](https://stackblitz.com/github/theoklitosBam7/ng-unsubscribe-examples/tree/3-async-pipe)
@@ -170,15 +169,18 @@ Using the `AsyncPipe` there is no need neither to `.subscribe()` nor to `.unsubs
 ## The RxJS Operators
 
 [RxJS](https://rxjs-dev.firebaseapp.com/guide/overview) is a library for composing asynchronous and event-based programs by using observable sequences. It has some great operators such as:
-  - [take](https://rxjs-dev.firebaseapp.com/api/operators/take)
-  - [takeWhile](https://rxjs-dev.firebaseapp.com/api/operators/takeWhile)
-  - [first](https://rxjs-dev.firebaseapp.com/api/operators/first)
-  - [last](https://rxjs-dev.firebaseapp.com/api/operators/last)
+
+- [take](https://rxjs-dev.firebaseapp.com/api/operators/take)
+- [takeWhile](https://rxjs-dev.firebaseapp.com/api/operators/takeWhile)
+- [first](https://rxjs-dev.firebaseapp.com/api/operators/first)
+- [last](https://rxjs-dev.firebaseapp.com/api/operators/last)
 
 We won't stand in each of them. We'll see only the usage of [takeUntil](https://rxjs-dev.firebaseapp.com/api/operators/takeUntil) operator.
+
 > Lets values pass until a second Observable, notifier, emits a value. Then, it completes.
 
 At first, I'd like to mention the dangers as described in this article: [RxJS: Avoiding takeUntil Leaks](https://ncjamieson.com/avoiding-takeuntil-leaks/). `takeUntil` operator has to be (usually) the last operator in the `pipe`.
+
 > If the `takeUntil` operator is placed before an operator that involves a subscription to another observable source, the subscription to that source might not be unsubscribed when `takeUntil` receives its notification.
 
 [Live Example](https://stackblitz.com/github/theoklitosBam7/ng-unsubscribe-examples/tree/4-takeuntil)
@@ -235,8 +237,8 @@ All the above solutions actually solve our problem, however they all have at lea
 First, we'll move the `ngOnDestroy()` into a service:
 
 ```ts title="destroy.service.ts"
-import { Injectable, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Injectable, OnDestroy } from "@angular/core";
+import { Subject } from "rxjs";
 
 @Injectable()
 export class DestroyService extends Subject<void> implements OnDestroy {
@@ -277,8 +279,8 @@ We have the exact same result as the previous one! We can provide an instance of
 
 Eventually, I think that the preferable way to manage our RxJS subscriptions is by using `takeUntil` operator via an Angular service. Some benefits are:
 
-  - Less code
-  - Fires a completion event when we kill our stream
-  - Less chance to forget `.unsubscribe()` or `.next()`, `.complete()` methods in the `ngOnDestroy()` implementation
+- Less code
+- Fires a completion event when we kill our stream
+- Less chance to forget `.unsubscribe()` or `.next()`, `.complete()` methods in the `ngOnDestroy()` implementation
 
 GitHub repo with the examples is available [here](https://github.com/theoklitosBam7/ng-unsubscribe-examples).

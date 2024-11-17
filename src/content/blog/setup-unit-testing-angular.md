@@ -1,14 +1,11 @@
 ---
-slug: setup-unit-testing-angular
-title: Setup Unit Testing Tools in Angular CLI Project
-authors: theoklitos
-tags: [angular, unit testing, jest, spectator]
-draft: false
+title: "Setup Unit Testing Tools in Angular CLI Project"
+description: "Setup unit testing tools in Angular CLI project"
+pubDate: "2022-01-21"
+heroImage: "/blog-placeholder-2.jpg"
 ---
 
 Every developer have to ensure that his/her application is working as expected. A safeguard to that purpose are unit tests.
-
-<!--truncate-->
 
 ## The Defaults of an Angular CLI Generated Project
 
@@ -70,16 +67,16 @@ We create a config file in project's root directory with the name `jest.config.j
 
 ```js title="jest.config.js"
 module.exports = {
-  preset: 'jest-preset-angular',
-  setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
+  preset: "jest-preset-angular",
+  setupFilesAfterEnv: ["<rootDir>/setup-jest.ts"],
 };
 ```
 
 As you guess from the above configuration, we will now create `setup-jest.ts` in root directory:
 
 ```ts title="setup-jest.ts"
-import 'jest-preset-angular/setup-jest';
-import './jest-global-mocks';
+import "jest-preset-angular/setup-jest";
+import "./jest-global-mocks";
 ```
 
 The second `import` above is optional at first. Because `jest-preset-angular` uses `JSDOM`, which is different from normal browsers, we might need some global browser mocks to simulate the behaviors of real browsers in `JSDOM`. To add global mocks, we can create `jest-global-mocks.ts` and use it in our Jest setup.
@@ -89,19 +86,19 @@ You may find more information about `jest-preset-angular` in official [docs](htt
 Here is an example of `jest-global-mocks.ts`:
 
 ```ts title="jest-global-mocks.ts"
-Object.defineProperty(window, 'CSS', { value: null });
-Object.defineProperty(document, 'doctype', {
-  value: '<!DOCTYPE html>',
+Object.defineProperty(window, "CSS", { value: null });
+Object.defineProperty(document, "doctype", {
+  value: "<!DOCTYPE html>",
 });
-Object.defineProperty(window, 'getComputedStyle', {
+Object.defineProperty(window, "getComputedStyle", {
   value: () => {
     return {
-      display: 'none',
-      appearance: ['-webkit-appearance'],
+      display: "none",
+      appearance: ["-webkit-appearance"],
     };
   },
 });
-Object.defineProperty(document.body.style, 'transform', {
+Object.defineProperty(document.body.style, "transform", {
   value: () => {
     return {
       enumerable: true,
