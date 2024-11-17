@@ -32,7 +32,7 @@ export class FirstComponent implements OnInit {
 
   ngOnInit(): void {
     this.timer1$.subscribe((val) =>
-      this.messageService.add(`FirstComponent timer1$: ${val}`)
+      this.messageService.add(`FirstComponent timer1$: ${val}`),
     );
   }
 }
@@ -58,7 +58,7 @@ export class FirstComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.timer1$.subscribe((val) =>
-      this.messageService.add(`FirstComponent timer1$: ${val}`)
+      this.messageService.add(`FirstComponent timer1$: ${val}`),
     );
   }
   // highlight-start
@@ -85,11 +85,11 @@ export class FirstComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription1 = this.timer1$.subscribe((val) =>
-      this.messageService.add(`FirstComponent timer1$: ${val}`)
+      this.messageService.add(`FirstComponent timer1$: ${val}`),
     );
 
     this.subscription2 = this.timer2$.subscribe((val) =>
-      this.messageService.add(`FirstComponent timer2$: ${val}`)
+      this.messageService.add(`FirstComponent timer2$: ${val}`),
     );
   }
 
@@ -119,14 +119,14 @@ export class FirstComponent implements OnInit, OnDestroy {
     // highlight-next-line
     this.subscription.add(
       this.timer1$.subscribe((val) =>
-        this.messageService.add(`FirstComponent timer1$: ${val}`)
-      )
+        this.messageService.add(`FirstComponent timer1$: ${val}`),
+      ),
     );
     // highlight-next-line
     this.subscription.add(
       this.timer2$.subscribe((val) =>
-        this.messageService.add(`FirstComponent timer2$: ${val}`)
-      )
+        this.messageService.add(`FirstComponent timer2$: ${val}`),
+      ),
     );
   }
 
