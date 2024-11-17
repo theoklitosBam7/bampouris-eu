@@ -1,12 +1,6 @@
 {
-  "extends": "@tsconfig/docusaurus/tsconfig.json",
+  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "baseUrl": ".",
-    "skipLibCheck": true,
-    "lib": ["DOM", "ESNext"],
-    "resolveJsonModule": true,
-    "strict": true
-  },
-  "include": ["src/", "docusaurus.config.js"],
-  "exclude": ["node_modules", "tmp"]
+    "strictNullChecks": true
+  }
 }
