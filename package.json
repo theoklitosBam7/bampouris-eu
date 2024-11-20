@@ -2,6 +2,14 @@
   "name": "bampouris-eu",
   "type": "module",
   "version": "0.0.1",
+  "private": true,
+  "description": "Personal web page/blog of Theoklitos Bampouris",
+  "author": {
+    "name": "Theoklitos Bampouris",
+    "email": "th.bampouris@gmail.com",
+    "url": "https://www.bampouris.eu/"
+  },
+  "license": "MIT",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
