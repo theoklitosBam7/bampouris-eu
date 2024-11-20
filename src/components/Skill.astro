@@ -1,0 +1,27 @@
+---
+import { Image } from "astro:assets";
+
+type Props = {
+  title: string;
+  url: string;
+  logo: string;
+};
+
+const { title, url, logo } = Astro.props;
+---
+
+<a href={url} target="_blank" rel="noreferrer noopener">
+  <Image
+    src={logo}
+    alt={title}
+    width={50}
+    height={50}
+    style={{ margin: "16px" }}
+  />
+</a>
+
+<style>
+  a {
+    text-decoration: none;
+  }
+</style>
