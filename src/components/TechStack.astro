@@ -1,0 +1,67 @@
+---
+import TechStackItem from "./TechStackItem.astro";
+
+const techStack = [
+  {
+    logo: "/logos/react-2.svg",
+    name: "React",
+    url: "https://react.dev/",
+  },
+  {
+    logo: "/logos/astro-icon-dark.svg",
+    name: "Astro",
+    url: "https://astro.build/",
+  },
+  {
+    logo: "/logos/lit-1.svg",
+    name: "Lit",
+    url: "https://lit.dev/",
+  },
+  {
+    logo: "/logos/vue-9.svg",
+    name: "Vue.js",
+    url: "https://vuejs.org/",
+  },
+  {
+    logo: "/logos/typescript.svg",
+    name: "TypeScript",
+    url: "https://www.typescriptlang.org/",
+  },
+  {
+    logo: "/logos/javascript-1.svg",
+    name: "JavaScript",
+    url: "https://developer.mozilla.org/en-US/docs/Web/JavaScript",
+  },
+  {
+    logo: "/logos/html-1.svg",
+    name: "HTML",
+    url: "https://developer.mozilla.org/en-US/docs/Web/HTML",
+  },
+  {
+    logo: "/logos/css-3.svg",
+    name: "CSS",
+    url: "https://developer.mozilla.org/en-US/docs/Web/CSS",
+  },
+];
+---
+
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4">Tech Stack</h2>
+      <p class="text-gray-600 max-w-2xl mx-auto">
+        Technologies and tools I love working with
+      </p>
+    </div>
+
+    <div
+      class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 lg:gap-6 max-w-5xl mx-auto"
+    >
+      {
+        techStack.map((tech) => (
+          <TechStackItem logo={tech.logo} name={tech.name} url={tech.url} />
+        ))
+      }
+    </div>
+  </div>
+</section>

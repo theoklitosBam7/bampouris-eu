@@ -1,11 +1,15 @@
 ---
-import { Image } from "astro:assets";
-
 import BaseHead from "@/components/BaseHead.astro";
+import CallToAction from "@/components/CallToAction.astro";
+import FeaturedProjects from "@/components/FeaturedProjects.astro";
 import Footer from "@/components/Footer.astro";
+import GitHubStats from "@/components/GitHubStats.astro";
 import Header from "@/components/Header.astro";
-import Skill from "@/components/Skill.astro";
+import HeroSection from "@/components/HeroSection.astro";
+import TechStack from "@/components/TechStack.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "@/consts";
+
+import "../styles/global.css";
 ---
 
 <!doctype html>
@@ -13,78 +17,52 @@ import { SITE_DESCRIPTION, SITE_TITLE } from "@/consts";
   <head>
     <BaseHead description={SITE_DESCRIPTION} title={SITE_TITLE} />
     <style>
-      .prose {
-        text-align: center;
+      /* Override global main styles for full-width layout */
+      main {
+        width: 100% !important;
+        max-width: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
       }
-      .avatar {
-        border-radius: 50%;
+
+      /* Ensure proper spacing and font inheritance */
+      section {
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          "Helvetica Neue",
+          Arial,
+          "Noto Sans",
+          sans-serif;
       }
-      .skills {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+
+      /* Fix grid layouts */
+      .grid {
+        display: grid !important;
+      }
+
+      /* Ensure containers work properly */
+      .max-w-7xl {
+        max-width: 80rem !important;
+      }
+
+      .max-w-6xl {
+        max-width: 72rem !important;
       }
     </style>
   </head>
-  <body>
+  <body class="min-h-screen bg-white">
     <Header />
     <main>
-      <section class="prose">
-        <h1>👋 Hello, I'm Theoklitos!</h1>
-        <Image
-          alt="Me"
-          class={"avatar"}
-          height={400}
-          loading={"eager"}
-          src="/theoklitos-avatar-1.jpg"
-          width={400}
-        />
-        <h3>What Am I?</h3>
-        <p>Software Engineer with front-end web development orientation.</p>
-        <p>
-          I participate in analysis, design and implementation of the new
-          features for company's web applications, maintaining at the same time
-          the existing ones.
-        </p>
-        <p>
-          I'm a continuous learner of design patterns and architectures with
-          cutting-edge technologies, focusing on quality and delivering on time.
-        </p>
-
-        <div class="skills">
-          <Skill
-            logo="/logos/astro-icon-dark.svg"
-            title="Astro"
-            url="https://astro.build/"
-          />
-          <Skill logo="/logos/lit-1.svg" title="Lit" url="https://lit.dev/" />
-          <Skill
-            logo="/logos/react-2.svg"
-            title="React"
-            url="https://react.dev/"
-          />
-          <Skill
-            logo="/logos/typescript.svg"
-            title="TypeScript"
-            url="https://www.typescriptlang.org/"
-          />
-          <Skill
-            logo="/logos/javascript-1.svg"
-            title="JavaScript"
-            url="https://developer.mozilla.org/en-US/docs/Web/JavaScript"
-          />
-          <Skill
-            logo="/logos/html-1.svg"
-            title="HTML"
-            url="https://developer.mozilla.org/en-US/docs/Web/HTML"
-          />
-          <Skill
-            logo="/logos/css-3.svg"
-            title="CSS"
-            url="https://developer.mozilla.org/en-US/docs/Web/CSS"
-          />
-        </div>
-      </section>
+      <HeroSection />
+      <TechStack />
+      <FeaturedProjects />
+      <GitHubStats />
+      <CallToAction />
     </main>
     <Footer />
   </body>
