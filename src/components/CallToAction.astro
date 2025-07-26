@@ -1,0 +1,81 @@
+---
+type Props = {
+  primaryButtonText?: string;
+  primaryButtonUrl?: string;
+  secondaryButtonText?: string;
+  secondaryButtonUrl?: string;
+  subtitle?: string;
+  title?: string;
+};
+
+const {
+  primaryButtonText = "Start a Project",
+  primaryButtonUrl = "mailto:th.bampouris@gmail.com",
+  secondaryButtonText = "View My Work",
+  secondaryButtonUrl = "/blog",
+  subtitle = "Ready to bring your ideas to life? Let's work together to create something amazing.",
+  title = "Let's Build Something Great Together",
+} = Astro.props;
+---
+
+<section class="py-20 bg-gradient-to-r from-emerald-600 to-teal-600">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
+      {title}
+    </h2>
+    <p class="text-xl text-emerald-100 mb-10 max-w-2xl mx-auto leading-relaxed">
+      {subtitle}
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a
+        class="inline-flex items-center px-8 py-4 border border-transparent text-lg font-semibold rounded-lg text-emerald-600 bg-white hover:bg-gray-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+        href={primaryButtonUrl}
+      >
+        {primaryButtonText}
+        <svg
+          class="ml-2 w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M13 7l5 5m0 0l-5 5m5-5H6"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"></path>
+        </svg>
+      </a>
+
+      <a
+        class="inline-flex items-center px-8 py-4 border-2 border-white text-lg font-semibold rounded-lg text-white bg-transparent hover:bg-white hover:text-emerald-600 transition-all duration-300"
+        href={secondaryButtonUrl}
+      >
+        {secondaryButtonText}
+        <svg
+          class="ml-2 w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"></path>
+        </svg>
+      </a>
+    </div>
+
+    <div class="mt-12 flex items-center justify-center text-emerald-100">
+      <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+        <path
+          d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"
+        ></path>
+        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"
+        ></path>
+      </svg>
+      <span class="text-sm">Usually respond within 24 hours</span>
+    </div>
+  </div>
+</section>

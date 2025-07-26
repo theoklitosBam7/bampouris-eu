@@ -1,68 +1,106 @@
-# Astro Starter Kit: Blog
+# bampouris-eu
 
-```sh
-npm create astro@latest -- --template blog
-```
+This is the source code for [bampouris.eu](https://bampouris.eu), a personal portfolio and blog site built with [Astro](https://astro.build/), TypeScript, and modern web technologies.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/blog)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/blog)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/blog/devcontainer.json)
+## ✨ Features
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+- Fast, SEO-friendly static site built with Astro
+- Blog posts written in Markdown
+- Portfolio section for featured projects
+- Responsive design and minimal custom styling
+- RSS feed and sitemap support
+- OpenGraph and canonical meta tags
+- Custom components for layout, tech stack, and more
 
-![blog](https://github.com/withastro/astro/assets/2244813/ff10799f-a816-4703-b967-c78997e8323d)
-
-Features:
-
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
+## 🗂️ Project Structure
 
 ```text
 ├── public/
+│   ├── blog-placeholder-*.jpg
+│   ├── favicon.svg
+│   ├── theoklitos-avatar-1.jpg
+│   ├── fonts/
+│   └── logos/
 ├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
+│   ├── consts.ts
+│   ├── env.d.ts
+│   ├── components/
+│   ├── content/
+│   │   ├── config.ts
+│   │   └── blog/
+│   ├── layouts/
+│   ├── pages/
+│   ├── styles/
+│   └── utils/
+├── astro.config.ts
+├── eslint.config.js
+├── prettier.config.mjs
 ├── package.json
-└── tsconfig.json
+├── tsconfig.json
+├── LICENSE
+├── README.md
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+### Key Directories
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+- `public/`: Static assets (images, fonts, logos)
+- `src/components/`: Astro components for UI and layout
+- `src/content/blog/`: Markdown blog posts
+- `src/layouts/`: Layout components for pages and posts
+- `src/pages/`: Site pages and routing
+- `src/styles/`: Global CSS
+- `src/utils/`: Utility functions
 
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
+## 🚀 Getting Started
 
-Any static assets, like images, can be placed in the `public/` directory.
+1. **Install dependencies**
 
-## 🧞 Commands
+   ```sh
+   npm install
+   ```
 
-All commands are run from the root of the project, from a terminal:
+2. **Start the development server**
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+   ```sh
+   npm run dev
+   ```
 
-## 👀 Want to learn more?
+   Visit [localhost:4321](http://localhost:4321) in your browser.
 
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+3. **Build for production**
 
-## Credit
+   ```sh
+   npm run build
+   ```
 
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+4. **Preview the build**
+
+   ```sh
+   npm run preview
+   ```
+
+## 📝 Blog Posts
+
+Add Markdown files to `src/content/blog/` to create new posts. Each post supports frontmatter for title, date, description, and tags.
+
+## 🧩 Scripts
+
+| Command             | Description                              |
+| ------------------- | ---------------------------------------- |
+| `npm install`       | Install dependencies                     |
+| `npm run dev`       | Start local dev server                   |
+| `npm run build`     | Build site to `./dist/`                  |
+| `npm run preview`   | Preview production build locally         |
+| `npm run astro ...` | Run Astro CLI commands                   |
+| `npm run lint`      | Run ESLint and Prettier for code quality |
+
+## 🛠️ Tech Stack
+
+- [Astro](https://astro.build/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Markdown](https://www.markdownguide.org/)
+- [Prettier](https://prettier.io/) & [ESLint](https://eslint.org/)
+
+## 📄 License
+
+[MIT](./LICENSE) License © 2025 [Theoklitos Bampouris](https://github.com/theoklitosBam7)
