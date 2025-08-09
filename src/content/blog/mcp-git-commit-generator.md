@@ -2,7 +2,7 @@
 title: "Revolutionizing Git Workflows: The MCP Git Commit Generator"
 description: "A deep dive into the MCP Git Commit Generator and its impact on Git workflows"
 pubDate: "2025-07-27"
-heroImage: "/blog-placeholder-3.jpg"
+heroImage: "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/gykvb5lhtdl1bilspuyf.png"
 ---
 
 ## Introduction
