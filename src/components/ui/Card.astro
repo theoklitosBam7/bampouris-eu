@@ -1,0 +1,157 @@
+---
+interface Props {
+  class?: string;
+  hover?: "glow" | "lift" | "none" | "scale";
+  href?: string;
+  padding?: "lg" | "md" | "none" | "sm";
+}
+
+const {
+  class: className = "",
+  hover = "lift",
+  href,
+  padding = "md",
+} = Astro.props;
+
+const baseClasses = "card";
+const hoverClass = hover !== "none" ? `card-${hover}` : "";
+const paddingClass = padding !== "none" ? `card-p-${padding}` : "";
+const allClasses =
+  `${baseClasses} ${hoverClass} ${paddingClass} ${className}`.trim();
+---
+
+{
+  href ? (
+    <a class={allClasses} href={href}>
+      <slot />
+    </a>
+  ) : (
+    <div class={allClasses}>
+      <slot />
+    </div>
+  )
+}
+
+<style>
+  /* Base Card Styles */
+  .card {
+    background-color: var(--color-bg-primary);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    transition:
+      transform var(--transition-base),
+      box-shadow var(--transition-base);
+  }
+
+  /* Padding Variants */
+  .card-p-sm {
+    padding: var(--space-4);
+  }
+
+  .card-p-md {
+    padding: var(--space-6);
+  }
+
+  .card-p-lg {
+    padding: var(--space-8);
+  }
+
+  /* Hover Effects */
+  .card-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--box-shadow);
+  }
+
+  .card-scale:hover {
+    transform: scale(1.02);
+    box-shadow: var(--box-shadow);
+  }
+
+  .card-glow:hover {
+    box-shadow: 0 0 40px rgba(37, 99, 235, 0.2);
+  }
+
+  /* Link Card Styles */
+  a.card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  a.card:hover {
+    color: inherit;
+  }
+
+  /* Card with Image */
+  .card:has(> img:first-child) {
+    padding: 0;
+  }
+
+  .card > img:first-child {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+
+  /* Card Content */
+  .card-content {
+    padding: var(--space-6);
+  }
+
+  /* Card Title */
+  .card-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--text-xl);
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  /* Card Description */
+  .card-description {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Card Footer */
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: var(--space-4);
+    margin-top: var(--space-4);
+    border-top: 1px solid var(--color-bg-secondary);
+  }
+
+  /* Card Tag */
+  .card-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-1) var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: var(--radius-full);
+    background-color: var(--color-bg-secondary);
+    color: var(--color-text-secondary);
+  }
+
+  /* Dark Mode Adjustments */
+  @media (prefers-color-scheme: dark) {
+    .card {
+      background-color: var(--color-bg-secondary);
+    }
+
+    .card-footer {
+      border-top-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .card-tag {
+      background-color: var(--color-bg-tertiary);
+    }
+  }
+</style>
