@@ -1,0 +1,347 @@
+---
+import Button from "@/components/ui/Button.astro";
+import Card from "@/components/ui/Card.astro";
+import Tag from "@/components/ui/Tag.astro";
+import { fetchFeaturedProjects } from "@/utils/github";
+
+const result = await fetchFeaturedProjects();
+---
+
+<section class="section section-gray" id="projects">
+  <div class="container-wide">
+    <!-- Section Header -->
+    <div class="section-header reveal-on-scroll">
+      <span class="section-label">Portfolio</span>
+      <h2 class="section-title">Featured Projects</h2>
+      <p class="section-description">
+        A selection of projects that showcase my expertise in modern web
+        development, from concept to deployment.
+      </p>
+    </div>
+
+    <!-- Projects Grid -->
+    {
+      result.isError ? (
+        <div class="error-state reveal-on-scroll">
+          <div class="error-icon">
+            <svg
+              fill="none"
+              height="48"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              width="48"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" x2="12" y1="8" y2="12" />
+              <line x1="12" x2="12.01" y1="16" y2="16" />
+            </svg>
+          </div>
+          <h3 class="error-title">Unable to Load Projects</h3>
+          <p class="error-message">{result.errorMessage}</p>
+          <Button
+            external
+            href="https://github.com/theoklitosBam7?tab=repositories"
+            variant="primary"
+          >
+            View on GitHub
+          </Button>
+        </div>
+      ) : (
+        <>
+          <div class="projects-grid">
+            {result.projects.map((project, index) => (
+              <Card
+                class={`project-card project-card-${index === 0 ? "featured" : "regular"}`}
+                hover="lift"
+                href={project.githubUrl}
+              >
+                <div class="project-content">
+                  <div class="project-header">
+                    <Tag size="sm" variant="outline">
+                      {project.language || "Various"}
+                    </Tag>
+                    {project.stars > 0 && (
+                      <span class="project-stars">
+                        <svg
+                          fill="currentColor"
+                          height="14"
+                          stroke="none"
+                          viewBox="0 0 24 24"
+                          width="14"
+                        >
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                        {project.stars}
+                      </span>
+                    )}
+                  </div>
+
+                  <h3 class="project-title">{project.title}</h3>
+                  <p class="project-description">{project.description}</p>
+
+                  <div class="project-footer">
+                    <span class="project-link">
+                      View Project
+                      <svg
+                        fill="none"
+                        height="16"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        viewBox="0 0 24 24"
+                        width="16"
+                      >
+                        <path d="M5 12h14" />
+                        <path d="m12 5 7 7-7 7" />
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          <div class="section-cta reveal-on-scroll">
+            <Button
+              external
+              href="https://github.com/theoklitosBam7?tab=repositories"
+              size="lg"
+              variant="secondary"
+            >
+              View All Projects
+              <svg
+                fill="none"
+                height="20"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="20"
+              >
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" x2="21" y1="14" y2="3" />
+              </svg>
+            </Button>
+          </div>
+        </>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .section-gray {
+    background-color: var(--color-bg-secondary);
+  }
+
+  /* Section Header */
+  .section-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto var(--space-16);
+  }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+    margin-bottom: var(--space-4);
+  }
+
+  .section-label::before {
+    content: "";
+    width: 24px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-accent), transparent);
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-4);
+    letter-spacing: -0.02em;
+  }
+
+  @media (min-width: 768px) {
+    .section-title {
+      font-size: var(--text-5xl);
+    }
+  }
+
+  .section-description {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  /* Projects Grid */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 768px) {
+    .projects-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .projects-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .project-card-featured {
+      grid-column: span 2;
+    }
+  }
+
+  /* Project Card */
+  :global(.project-card) {
+    background: linear-gradient(
+      135deg,
+      var(--color-bg-primary) 0%,
+      rgba(255, 255, 255, 0.5) 100%
+    );
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(.project-card) {
+      background: linear-gradient(
+        135deg,
+        var(--color-bg-tertiary) 0%,
+        rgba(30, 30, 30, 0.8) 100%
+      );
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  .project-content {
+    padding: var(--space-8);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .project-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-4);
+  }
+
+  .project-stars {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent-warm);
+  }
+
+  .project-title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-3);
+    line-height: 1.3;
+  }
+
+  .project-description {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+    margin: 0 0 var(--space-6) 0;
+    flex: 1;
+  }
+
+  .project-footer {
+    margin-top: auto;
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-bg-secondary);
+  }
+
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: var(--text-base);
+    color: var(--color-accent);
+    transition: gap var(--transition-fast);
+  }
+
+  :global(.project-card:hover) .project-link {
+    gap: var(--space-3);
+  }
+
+  .project-link svg {
+    transition: transform var(--transition-fast);
+  }
+
+  :global(.project-card:hover) .project-link svg {
+    transform: translateX(4px);
+  }
+
+  /* Section CTA */
+  .section-cta {
+    text-align: center;
+    margin-top: var(--space-12);
+  }
+
+  /* Error State */
+  .error-state {
+    text-align: center;
+    padding: var(--space-16) var(--space-8);
+    background: var(--color-bg-primary);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--color-bg-secondary);
+  }
+
+  .error-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: 50%;
+    color: var(--color-error);
+    margin-bottom: var(--space-6);
+  }
+
+  .error-title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .error-message {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+</style>

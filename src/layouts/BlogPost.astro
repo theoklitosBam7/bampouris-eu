@@ -7,87 +7,698 @@ import BaseHead from "@/components/BaseHead.astro";
 import Footer from "@/components/Footer.astro";
 import FormattedDate from "@/components/FormattedDate.astro";
 import Header from "@/components/Header.astro";
-import "@/styles/blog.css";
+import Tag from "@/components/ui/Tag.astro";
 
-type Props = CollectionEntry<"blog">["data"];
+type Props = { tags?: string[] } & CollectionEntry<"blog">["data"];
 
-const { description, heroImage, pubDate, title, updatedDate } = Astro.props;
+const { description, heroImage, pubDate, tags, title, updatedDate } =
+  Astro.props;
+
+// Calculate reading time (rough estimate)
+const wordsPerMinute = 200;
+const wordCount = description?.split(/\s+/).length || 0;
+const readingTime = Math.max(1, Math.ceil(wordCount / wordsPerMinute)) + 4; // Base 4 min + content
+
+const currentUrl = Astro.url.toString();
 ---
 
 <html lang="en">
   <head>
-    <BaseHead description={description} title={title} />
-    <style>
-      main {
-        width: calc(100% - 2em);
-        max-width: 100%;
-        margin: 0;
-      }
-      .hero-image {
-        width: 100%;
-      }
-      .hero-image img {
-        display: block;
-        margin: 0 auto;
-        border-radius: 12px;
-        box-shadow: var(--box-shadow);
-      }
-      .prose {
-        width: 960px;
-        max-width: calc(100% - 2em);
-        margin: auto;
-        padding: 1em;
-        color: rgb(var(--gray-dark));
-      }
-      .title {
-        margin-bottom: 1em;
-        padding: 1em 0;
-        text-align: center;
-        line-height: 1;
-      }
-      .title h1 {
-        margin: 0 0 0.5em 0;
-      }
-      .date {
-        margin-bottom: 0.5em;
-        color: rgb(var(--gray));
-      }
-      .last-updated-on {
-        font-style: italic;
-      }
-    </style>
+    <BaseHead description={description} image={heroImage} title={title} />
   </head>
 
-  <body>
+  <body class="grain-overlay">
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar"></div>
+
     <Header />
-    <main>
-      <article>
-        <div class="hero-image">
+
+    <main class="blog-post-main">
+      <!-- Article Header -->
+      <header class="article-header">
+        <div class="container-narrow">
           {
             heroImage && (
-              <Image alt={title} height={510} src={heroImage} width={1020} />
+              <div class="article-hero-image">
+                <Image
+                  alt={title}
+                  decoding="async"
+                  height={630}
+                  loading="eager"
+                  src={heroImage}
+                  width={1200}
+                />
+              </div>
             )
           }
-        </div>
-        <div class="prose">
-          <div class="title">
-            <div class="date">
-              <FormattedDate date={pubDate} />
-              {
-                updatedDate && (
-                  <div class="last-updated-on">
-                    Last updated on <FormattedDate date={updatedDate} />
-                  </div>
-                )
-              }
+
+          <div class="article-meta">
+            {
+              tags && tags.length > 0 && (
+                <div class="article-tags">
+                  {tags.map((tag: string) => (
+                    <Tag size="sm" variant="accent">
+                      {tag}
+                    </Tag>
+                  ))}
+                </div>
+              )
+            }
+
+            <h1 class="article-title">{title}</h1>
+
+            <p class="article-description">{description}</p>
+
+            <div class="article-byline">
+              <div class="author">
+                <img
+                  alt="Theoklitos Bampouris"
+                  class="author-avatar"
+                  height="48"
+                  src="/theoklitos-avatar-1.jpg"
+                  width="48"
+                />
+                <div class="author-info">
+                  <span class="author-name">Theoklitos Bampouris</span>
+                  <span class="author-role">Software Engineer</span>
+                </div>
+              </div>
+
+              <div class="article-date">
+                <span class="date-published">
+                  <svg
+                    fill="none"
+                    height="16"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="16"
+                  >
+                    <rect height="18" rx="2" ry="2" width="18" x="3" y="4"
+                    ></rect>
+                    <line x1="16" x2="16" y1="2" y2="6"></line>
+                    <line x1="8" x2="8" y1="2" y2="6"></line>
+                    <line x1="3" x2="21" y1="10" y2="10"></line>
+                  </svg>
+                  <FormattedDate date={pubDate} />
+                </span>
+                {
+                  updatedDate && (
+                    <span class="date-updated">
+                      Updated <FormattedDate date={updatedDate} />
+                    </span>
+                  )
+                }
+                <span class="reading-time">
+                  <svg
+                    fill="none"
+                    height="16"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    width="16"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  {readingTime} min read
+                </span>
+              </div>
             </div>
-            <h1>{title}</h1>
-            <hr />
           </div>
-          <slot />
+        </div>
+      </header>
+
+      <!-- Article Content -->
+      <article class="article-content">
+        <div class="container-narrow">
+          <div class="prose">
+            <slot />
+          </div>
         </div>
       </article>
+
+      <!-- Article Footer -->
+      <footer class="article-footer">
+        <div class="container-narrow">
+          <!-- Author Card -->
+          <div class="author-card">
+            <img
+              alt="Theoklitos Bampouris"
+              class="author-card-avatar"
+              height="80"
+              src="/theoklitos-avatar-1.jpg"
+              width="80"
+            />
+            <div class="author-card-content">
+              <h3 class="author-card-name">Written by Theoklitos Bampouris</h3>
+              <p class="author-card-bio">
+                Software Engineer passionate about front-end web development. I
+                write about modern web technologies, best practices, and lessons
+                learned.
+              </p>
+              <div class="author-card-links">
+                <a
+                  class="author-link"
+                  href="https://x.com/theoklitosBam7"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <svg
+                    fill="currentColor"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    width="18"
+                  >
+                    <path
+                      d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+                    ></path>
+                  </svg>
+                  Follow on X
+                </a>
+                <a
+                  class="author-link"
+                  href="https://www.linkedin.com/in/theoklitos-bampouris/"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <svg
+                    fill="currentColor"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    width="18"
+                  >
+                    <path
+                      d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                    ></path>
+                  </svg>
+                  LinkedIn
+                </a>
+                <a
+                  class="author-link"
+                  href="https://github.com/theoklitosBam7"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  <svg
+                    fill="currentColor"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    width="18"
+                  >
+                    <path
+                      d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+                    ></path>
+                  </svg>
+                  GitHub
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Share Section -->
+          <div class="share-section">
+            <h3 class="share-title">Share this article</h3>
+            <div class="share-buttons">
+              <a
+                aria-label="Share on X"
+                class="share-button"
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(currentUrl)}`}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <svg
+                  fill="currentColor"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  width="20"
+                >
+                  <path
+                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+                  ></path>
+                </svg>
+              </a>
+              <a
+                aria-label="Share on LinkedIn"
+                class="share-button"
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                <svg
+                  fill="currentColor"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  width="20"
+                >
+                  <path
+                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+                  ></path>
+                </svg>
+              </a>
+              <button
+                aria-label="Copy link"
+                class="share-button"
+                onclick="navigator.clipboard.writeText(window.location.href); this.classList.add('copied'); setTimeout(() => this.classList.remove('copied'), 2000);"
+              >
+                <svg
+                  fill="none"
+                  height="20"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="20"
+                >
+                  <path
+                    d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+                  ></path>
+                  <path
+                    d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </footer>
     </main>
+
     <Footer />
+
+    <!-- Progress Bar Script -->
+    <script>
+      const progressBar = document.getElementById("progressBar");
+
+      window.addEventListener(
+        "scroll",
+        () => {
+          const windowHeight = window.innerHeight;
+          const documentHeight =
+            document.documentElement.scrollHeight - windowHeight;
+          const scrolled = window.scrollY;
+          const progress = (scrolled / documentHeight) * 100;
+
+          if (progressBar) {
+            progressBar.style.width = `${progress}%`;
+          }
+        },
+        { passive: true },
+      );
+    </script>
   </body>
 </html>
+
+<style>
+  /* Progress Bar */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(
+      90deg,
+      var(--color-accent),
+      var(--color-accent-warm)
+    );
+    z-index: 9999;
+    width: 0%;
+    transition: width 0.1s ease;
+  }
+
+  /* Main Container */
+  .blog-post-main {
+    padding-top: 80px; /* Account for fixed header */
+  }
+
+  /* Article Header */
+  .article-header {
+    padding: var(--space-16) 0 var(--space-8);
+  }
+
+  .article-hero-image {
+    margin-bottom: var(--space-8);
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+  }
+
+  .article-hero-image img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 630;
+    object-fit: cover;
+  }
+
+  .article-meta {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .article-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .article-title {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-4);
+  }
+
+  @media (min-width: 768px) {
+    .article-title {
+      font-size: var(--text-5xl);
+    }
+  }
+
+  .article-description {
+    font-size: var(--text-xl);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-8);
+  }
+
+  /* Article Byline */
+  .article-byline {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--color-bg-secondary);
+  }
+
+  @media (min-width: 640px) {
+    .article-byline {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  .author {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .author-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .author-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .author-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: var(--text-base);
+    color: var(--color-text-primary);
+  }
+
+  .author-role {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-tertiary);
+  }
+
+  .article-date {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-tertiary);
+  }
+
+  .date-published,
+  .reading-time {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .date-updated {
+    font-style: italic;
+  }
+
+  /* Article Content */
+  .article-content {
+    padding: var(--space-8) 0;
+  }
+
+  /* Prose Styles */
+  .prose {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .prose :global(h2) {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-top: var(--space-12);
+    margin-bottom: var(--space-4);
+    letter-spacing: -0.02em;
+    scroll-margin-top: 100px;
+  }
+
+  .prose :global(h3) {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    scroll-margin-top: 100px;
+  }
+
+  .prose :global(h4) {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-2);
+  }
+
+  .prose :global(p) {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+    margin-bottom: var(--space-6);
+  }
+
+  .prose :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+    transition: color var(--transition-fast);
+  }
+
+  .prose :global(a:hover) {
+    color: var(--accent-dark);
+  }
+
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin-bottom: var(--space-6);
+    padding-left: var(--space-6);
+  }
+
+  .prose :global(li) {
+    font-size: var(--text-lg);
+    color: var(--color-text-secondary);
+    line-height: 1.8;
+    margin-bottom: var(--space-2);
+  }
+
+  .prose :global(blockquote) {
+    margin: var(--space-8) 0;
+    padding: var(--space-6) var(--space-8);
+    background: var(--color-bg-secondary);
+    border-left: 4px solid var(--color-accent);
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+  }
+
+  .prose :global(blockquote p) {
+    font-size: var(--text-xl);
+    font-style: italic;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+
+  .prose :global(pre) {
+    margin: var(--space-6) 0;
+    padding: var(--space-6);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    overflow-x: auto;
+  }
+
+  .prose :global(code) {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    padding: 0.125em 0.375em;
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-sm);
+    color: var(--color-accent);
+  }
+
+  .prose :global(pre code) {
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  .prose :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    margin: var(--space-8) 0;
+  }
+
+  .prose :global(hr) {
+    margin: var(--space-12) 0;
+    border: none;
+    border-top: 1px solid var(--color-bg-secondary);
+  }
+
+  .prose :global(strong) {
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+
+  /* Article Footer */
+  .article-footer {
+    padding: var(--space-16) 0;
+    border-top: 1px solid var(--color-bg-secondary);
+  }
+
+  /* Author Card */
+  .author-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    padding: var(--space-8);
+    background: var(--color-bg-secondary);
+    border-radius: var(--radius-2xl);
+    margin-bottom: var(--space-12);
+  }
+
+  @media (min-width: 640px) {
+    .author-card {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+  }
+
+  .author-card-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .author-card-content {
+    flex: 1;
+  }
+
+  .author-card-name {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .author-card-bio {
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+    margin-bottom: var(--space-4);
+  }
+
+  .author-card-links {
+    display: flex;
+    gap: var(--space-4);
+  }
+
+  .author-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .author-link:hover {
+    color: var(--color-accent);
+  }
+
+  /* Share Section */
+  .share-section {
+    text-align: center;
+  }
+
+  .share-title {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-4);
+  }
+
+  .share-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-3);
+  }
+
+  .share-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    color: var(--color-text-secondary);
+    background: var(--color-bg-secondary);
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+  }
+
+  .share-button:hover {
+    color: var(--color-accent);
+    background: rgba(37, 99, 235, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .share-button.copied {
+    color: var(--color-success);
+    background: rgba(16, 185, 129, 0.1);
+  }
+</style>

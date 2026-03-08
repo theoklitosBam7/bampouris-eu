@@ -1,68 +1,94 @@
 # bampouris-eu
 
-This is the source code for [bampouris.eu](https://bampouris.eu), a personal portfolio and blog site built with [Astro](https://astro.build/), TypeScript, and modern web technologies.
+This is the source code for [bampouris.eu](https://bampouris.eu) — a modern personal portfolio and blog site built with [Astro](https://astro.build/), [Tailwind CSS](https://tailwindcss.com/), TypeScript, and contemporary web technologies.
 
 ## ✨ Features
 
-- Fast, SEO-friendly static site built with Astro
-- Blog posts written in Markdown
-- Portfolio section for featured projects
-- Responsive design and minimal custom styling
-- RSS feed and sitemap support
-- OpenGraph and canonical meta tags
-- Custom components for layout, tech stack, and more
+### Design & UX
+
+- **Modern Hero Section** — Animated gradient orbs, floating badges, and scroll indicators
+- **Skills Marquee** — Infinite scrolling animation showcasing tech stack
+- **Bento Grid Layout** — Contemporary card-based design for skills/expertise
+- **Smooth Animations** — Scroll-triggered reveals, hover effects, and micro-interactions
+- **Dark Mode Support** — Automatic theme detection with CSS custom properties
+- **Fully Responsive** — Mobile-first approach with breakpoints for all screen sizes
+
+### Technical Features
+
+- **Astro 5** — Lightning-fast static site generation with zero JS by default
+- **Tailwind CSS v4** — Utility-first styling with Vite integration
+- **TypeScript** — Full type safety across components and content collections
+- **MDX Support** — Enhanced Markdown with interactive component support
+- **SEO Optimized** — Sitemap, RSS feed, OpenGraph, and canonical meta tags
+- **Image Optimization** — Automatic image optimization with Astro's Image component
+
+### Content
+
+- **Blog System** — Markdown-based posts with frontmatter, tags, and syntax highlighting
+- **Portfolio Section** — Featured projects with descriptions and links
+- **Latest Posts Display** — Dynamic homepage listing recent blog entries
 
 ## 🗂️ Project Structure
 
 ```text
 ├── public/
-│   ├── blog-placeholder-*.jpg
-│   ├── favicon.svg
-│   ├── theoklitos-avatar-1.jpg
-│   ├── fonts/
-│   └── logos/
+│   ├── blog-placeholder-*.jpg      # Blog post thumbnails
+│   ├── favicon.svg                 # Site favicon
+│   └── theoklitos-avatar-1.jpg     # Profile image
 ├── src/
-│   ├── consts.ts
-│   ├── env.d.ts
 │   ├── components/
+│   │   ├── home/
+│   │   │   ├── Hero.astro           # Hero section with animations
+│   │   │   ├── FeaturedProjects.astro # Portfolio showcase
+│   │   │   ├── LatestPosts.astro    # Blog listing
+│   │   │   └── SkillsMarquee.astro  # Tech stack marquee
+│   │   ├── ui/
+│   │   │   ├── Button.astro         # Reusable button component
+│   │   │   ├── Card.astro           # Card container component
+│   │   │   └── Tag.astro            # Tag/badge component
+│   │   ├── BaseHead.astro           # Head metadata
+│   │   ├── Footer.astro             # Site footer
+│   │   ├── FormattedDate.astro      # Date formatting
+│   │   └── Header.astro             # Navigation header
 │   ├── content/
-│   │   ├── config.ts
-│   │   └── blog/
+│   │   ├── config.ts                # Content collection config
+│   │   └── blog/                    # Markdown blog posts
 │   ├── layouts/
+│   │   ├── BlogPost.astro           # Blog post layout
+│   │   └── Layout.astro             # Base layout
 │   ├── pages/
-│   ├── styles/
-│   └── utils/
-├── astro.config.ts
-├── eslint.config.js
-├── prettier.config.mjs
-├── package.json
-├── tsconfig.json
-├── LICENSE
-├── README.md
+│   │   ├── index.astro              # Homepage
+│   │   └── blog/
+│   │       └── index.astro          # Blog listing page
+│   └── styles/
+│       ├── animations.css           # Scroll & hover animations
+│       └── global.css               # Global styles & variables
+├── astro.config.ts                  # Astro configuration
+├── eslint.config.js                 # ESLint rules
+├── prettier.config.mjs              # Prettier config
+├── tsconfig.json                    # TypeScript config
+└── package.json                     # Dependencies & scripts
 ```
 
-### Key Directories
+### Component Architecture
 
-- `public/`: Static assets (images, fonts, logos)
-- `src/components/`: Astro components for UI and layout
-- `src/content/blog/`: Markdown blog posts
-- `src/layouts/`: Layout components for pages and posts
-- `src/pages/`: Site pages and routing
-- `src/styles/`: Global CSS
-- `src/utils/`: Utility functions
+- **`src/components/home/`** — Homepage-specific sections with individual styling
+- **`src/components/ui/`** — Reusable UI components with consistent design tokens
+- **Scoped Styles** — Each component includes its own styles for maintainability
+- **Design Tokens** — CSS custom properties for colors, spacing, and typography
 
 ## 🚀 Getting Started
 
 1. **Install dependencies**
 
    ```sh
-   npm install
+   pnpm install
    ```
 
 2. **Start the development server**
 
    ```sh
-   npm run dev
+   pnpm dev
    ```
 
    Visit [localhost:4321](http://localhost:4321) in your browser.
@@ -70,37 +96,84 @@ This is the source code for [bampouris.eu](https://bampouris.eu), a personal por
 3. **Build for production**
 
    ```sh
-   npm run build
+   pnpm build
    ```
 
-4. **Preview the build**
+4. **Preview the production build**
 
    ```sh
-   npm run preview
+   pnpm preview
    ```
 
-## 📝 Blog Posts
+## 📝 Content Management
 
-Add Markdown files to `src/content/blog/` to create new posts. Each post supports frontmatter for title, date, description, and tags.
+### Blog Posts
+
+Add Markdown files to `src/content/blog/` to create new posts. Each post supports frontmatter:
+
+```yaml
+---
+title: "Post Title"
+description: "A brief description"
+date: 2025-01-01
+tags: ["astro", "tailwind", "webdev"]
+draft: false
+---
+# Your content here
+```
+
+### Featured Projects
+
+Projects are managed in `src/components/home/FeaturedProjects.astro` — edit the `projects` array to update the portfolio section.
+
+### Skills & Technologies
+
+The tech stack is configured in `src/components/home/SkillsMarquee.astro` — add or remove items from the `technologies` array.
 
 ## 🧩 Scripts
 
-| Command             | Description                              |
-| ------------------- | ---------------------------------------- |
-| `npm install`       | Install dependencies                     |
-| `npm run dev`       | Start local dev server                   |
-| `npm run build`     | Build site to `./dist/`                  |
-| `npm run preview`   | Preview production build locally         |
-| `npm run astro ...` | Run Astro CLI commands                   |
-| `npm run lint`      | Run ESLint and Prettier for code quality |
+| Command          | Description                              |
+| ---------------- | ---------------------------------------- |
+| `pnpm install`   | Install dependencies                     |
+| `pnpm dev`       | Start local dev server                   |
+| `pnpm build`     | Build site to `./dist/` with type check  |
+| `pnpm preview`   | Preview production build locally         |
+| `pnpm astro ...` | Run Astro CLI commands                   |
+| `pnpm lint`      | Run ESLint and Prettier for code quality |
+
+## 🎨 Customization
+
+### Styling
+
+- **Global Styles** — Edit `src/styles/global.css` for design tokens
+- **Animations** — Modify `src/styles/animations.css` for effects
+- **Tailwind CSS** — Using v4 with Vite plugin. Configuration via CSS variables and `@import "tailwindcss"` directives in component styles
+
+### Content Collections
+
+Configure content schemas in `src/content/config.ts` — Astro provides type-safe access to your Markdown frontmatter.
 
 ## 🛠️ Tech Stack
 
-- [Astro](https://astro.build/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Markdown](https://www.markdownguide.org/)
-- [Prettier](https://prettier.io/) & [ESLint](https://eslint.org/)
+| Technology                                    | Purpose                                        |
+| --------------------------------------------- | ---------------------------------------------- |
+| [Astro 5](https://astro.build/)               | Static site generator with island architecture |
+| [Tailwind CSS v4](https://tailwindcss.com/)   | Utility-first styling framework                |
+| [TypeScript](https://www.typescriptlang.org/) | Type-safe JavaScript                           |
+| [MDX](https://mdxjs.com/)                     | Enhanced Markdown with JSX support             |
+| [ESLint](https://eslint.org/)                 | Code linting and quality                       |
+| [Prettier](https://prettier.io/)              | Code formatting                                |
+| [pnpm](https://pnpm.io/)                      | Fast, disk-efficient package manager           |
+
+## 🌐 Browser Support
+
+This site supports modern evergreen browsers:
+
+- Chrome/Edge (last 2 versions)
+- Firefox (last 2 versions)
+- Safari (last 2 versions)
+- Mobile browsers (iOS Safari, Chrome Mobile)
 
 ## 📄 License
 
-[MIT](./LICENSE) License © 2025 [Theoklitos Bampouris](https://github.com/theoklitosBam7)
+[MIT](./LICENSE) License © 2026 [Theoklitos Bampouris](https://github.com/theoklitosBam7)

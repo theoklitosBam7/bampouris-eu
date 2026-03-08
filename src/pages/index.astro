@@ -1,62 +1,53 @@
 ---
 import BaseHead from "@/components/BaseHead.astro";
-import CallToAction from "@/components/CallToAction.astro";
-import FeaturedProjects from "@/components/FeaturedProjects.astro";
 import Footer from "@/components/Footer.astro";
-import GitHubStats from "@/components/GitHubStats.astro";
 import Header from "@/components/Header.astro";
-import HeroSection from "@/components/HeroSection.astro";
-import TechStack from "@/components/TechStack.astro";
+import FeaturedProjects from "@/components/home/FeaturedProjects.astro";
+import Hero from "@/components/home/Hero.astro";
+import LatestPosts from "@/components/home/LatestPosts.astro";
+import SkillsMarquee from "@/components/home/SkillsMarquee.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "@/consts";
-import "@/styles/home.css";
 ---
 
 <!doctype html>
 <html lang="en">
   <head>
     <BaseHead description={SITE_DESCRIPTION} title={SITE_TITLE} />
-    <style>
-      /* Override global main styles for full-width layout */
-      main {
-        width: 100% !important;
-        max-width: none !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-
-      section {
-        font-family:
-          ui-sans-serif,
-          system-ui,
-          -apple-system,
-          BlinkMacSystemFont,
-          "Segoe UI",
-          Roboto,
-          "Helvetica Neue",
-          Arial,
-          "Noto Sans",
-          sans-serif;
-      }
-      .grid {
-        display: grid !important;
-      }
-      .max-w-7xl {
-        max-width: 80rem !important;
-      }
-      .max-w-6xl {
-        max-width: 72rem !important;
-      }
-    </style>
   </head>
-  <body class="min-h-screen bg-white">
+  <body class="grain-overlay">
     <Header />
+
     <main>
-      <HeroSection />
-      <TechStack />
+      <Hero />
+      <SkillsMarquee />
       <FeaturedProjects />
-      <GitHubStats />
-      <CallToAction />
+      <LatestPosts />
     </main>
+
     <Footer />
+
+    <!-- Scroll Reveal Script -->
+    <script>
+      // Intersection Observer for scroll animations
+      const observerOptions = {
+        root: null,
+        rootMargin: "0px 0px -50px 0px",
+        threshold: 0.1,
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // Observe all elements with reveal-on-scroll class
+      document.querySelectorAll(".reveal-on-scroll").forEach((el) => {
+        observer.observe(el);
+      });
+    </script>
   </body>
 </html>
