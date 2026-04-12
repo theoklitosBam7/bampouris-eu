@@ -16,7 +16,7 @@ interface BlogPost {
     title: string;
     updatedDate?: Date;
   };
-  slug: string;
+  id: string;
 }
 
 const posts = (await getCollection("blog")).sort(
@@ -81,7 +81,7 @@ const allTags = [
                   class={`post-item ${index === 0 ? "post-item-featured" : ""}`}
                   data-tags={post.data.tags?.join(",") || ""}
                 >
-                  <a class="post-link" href={`/blog/${post.slug}/`}>
+                  <a class="post-link" href={`/blog/${post.id}/`}>
                     {post.data.heroImage && (
                       <div class="post-image">
                         <img
