@@ -227,9 +227,10 @@ export async function fetchFeaturedProjects() {
 
     // Filter for featured repositories (customize this list)
     const featuredRepoNames = [
-      "mcp-git-commit-generator",
+      "markdown-studio",
       "css-modules-types-generator",
       "express-greeklish",
+      "mcp-git-commit-generator",
     ];
 
     const featuredRepos = featuredRepoNames
