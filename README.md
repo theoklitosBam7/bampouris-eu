@@ -34,7 +34,7 @@ This is the source code for [bampouris.eu](https://bampouris.eu) — a modern pe
 ├── public/
 │   ├── blog-placeholder-*.jpg      # Blog post thumbnails
 │   ├── favicon.svg                 # Site favicon
-│   └── theoklitos-avatar-1.jpg     # Profile image
+│   └── avatar-anime-1.jpg     # Profile image
 ├── src/
 │   ├── components/
 │   │   ├── home/
