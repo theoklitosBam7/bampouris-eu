@@ -1,0 +1,5 @@
+minimumReleaseAge: 4320 # 3 days, in minutes
+allowBuilds:
+  esbuild: true
+  sharp: true
+  simple-git-hooks: false

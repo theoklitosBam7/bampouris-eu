@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 
-import { Image } from "astro:assets";
+import { getImage, Image } from "astro:assets";
 
 import BaseHead from "@/components/BaseHead.astro";
 import Footer from "@/components/Footer.astro";
@@ -13,6 +13,9 @@ type Props = { tags?: string[] } & CollectionEntry<"blog">["data"];
 
 const { description, heroImage, pubDate, tags, title, updatedDate } =
   Astro.props;
+const socialImage = heroImage
+  ? (await getImage({ src: heroImage })).src
+  : new URL("/blog-placeholder-1.jpg", Astro.url).toString();
 
 // Calculate reading time (rough estimate)
 const wordsPerMinute = 200;
@@ -24,7 +27,7 @@ const currentUrl = Astro.url.toString();
 
 <html lang="en">
   <head>
-    <BaseHead description={description} image={heroImage} title={title} />
+    <BaseHead description={description} image={socialImage} title={title} />
   </head>
 
   <body class="grain-overlay">
