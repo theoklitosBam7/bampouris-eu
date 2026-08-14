@@ -2,7 +2,7 @@
 title: "Pi Coding Agent: A Self-Documenting, Extensible AI Partner"
 description: "Exploring Pi's ability to read its own documentation, understand its codebase, and help extend or modify its behavior through natural conversation"
 pubDate: "2026-04-12"
-heroImage: "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/50akj24ratqwzqjsytct.png"
+heroImage: "./images/pi-self-documenting.png"
 ---
 
 > **Meta-lesson**: One of Pi's most powerful features is that you can ask it to explain itself. The agent can read its own documentation, investigate its codebase, and help you extend or modify its behavior—all through natural conversation.

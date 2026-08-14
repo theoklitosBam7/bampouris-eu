@@ -2,7 +2,7 @@
 title: "Avoid Memory Leaks in Angular"
 description: "Avoid memory leaks in Angular"
 pubDate: "2021-03-24"
-heroImage: "/blog-placeholder-1.jpg"
+heroImage: "./images/blog-placeholder-1.jpg"
 ---
 
 Almost five years ago, Ben Lesh wrote a nice article with title: [RxJS: Don’t Unsubscribe](https://medium.com/@benlesh/rxjs-dont-unsubscribe-6753ed4fda87). The author of course doesn't tell us to never care about our `Subscription`. He means that we must find a way that we don't have to perform `.unsubscribe()` manually in each one. Let's start our mission!

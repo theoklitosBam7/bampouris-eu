@@ -2,7 +2,7 @@
 title: "Setup Unit Testing Tools in Angular CLI Project"
 description: "Setup unit testing tools in Angular CLI project"
 pubDate: "2022-01-21"
-heroImage: "/blog-placeholder-2.jpg"
+heroImage: "./images/blog-placeholder-2.jpg"
 ---
 
 Every developer have to ensure that his/her application is working as expected. A safeguard to that purpose are unit tests.

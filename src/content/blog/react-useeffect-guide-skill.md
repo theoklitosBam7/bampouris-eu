@@ -2,7 +2,7 @@
 title: "Mastering React useEffect: An AI Agent Skill for Idiomatic Side Effects"
 description: "A technical deep dive into the react-useeffect-guide skill — installation, usage patterns, and the engineering benefits of embedding useEffect best practices into your AI-assisted workflow."
 pubDate: "2026-04-25"
-heroImage: "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/1ack8eteooz2jw0nmvmz.png"
+heroImage: "./images/react-useeffect-guide.png"
 tags: ["react", "frontend", "ai-agents", "hooks", "best-practices"]
 ---
 
@@ -60,16 +60,16 @@ When triggered, the skill injects its decision checklist and anti-pattern catalo
 
 Before the agent emits any `useEffect` usage, it evaluates the following checklist:
 
-| Question | If Yes | If No |
-|---|---|---|
-| Can I derive this value during render? | Calculate inline or use `useMemo` | Proceed |
-| Does this run because of a user interaction? | Move to event handler | Proceed |
-| Am I syncing state between sibling/parent components? | Lift state up or use `key` | Proceed |
-| Am I subscribing to a React-external store? | Consider `useSyncExternalStore` | Proceed |
-| Am I only using this Effect pattern in one place? | If not, extract a custom hook | Proceed |
-| Does my cleanup perfectly mirror my setup? | Verify symmetry | Refactor |
-| Are all reactive values in the dependency array? | Never suppress linter warnings | Fix root cause |
-| Am I fetching data? | Add `ignore` guard; prefer a framework or library | Proceed |
+| Question                                              | If Yes                                            | If No          |
+| ----------------------------------------------------- | ------------------------------------------------- | -------------- |
+| Can I derive this value during render?                | Calculate inline or use `useMemo`                 | Proceed        |
+| Does this run because of a user interaction?          | Move to event handler                             | Proceed        |
+| Am I syncing state between sibling/parent components? | Lift state up or use `key`                        | Proceed        |
+| Am I subscribing to a React-external store?           | Consider `useSyncExternalStore`                   | Proceed        |
+| Am I only using this Effect pattern in one place?     | If not, extract a custom hook                     | Proceed        |
+| Does my cleanup perfectly mirror my setup?            | Verify symmetry                                   | Refactor       |
+| Are all reactive values in the dependency array?      | Never suppress linter warnings                    | Fix root cause |
+| Am I fetching data?                                   | Add `ignore` guard; prefer a framework or library | Proceed        |
 
 This checklist acts as a gate. The vast majority of `useEffect` misuse is caught at step one or two.
 
@@ -85,13 +85,13 @@ Deriving state inside `useEffect` introduces an unnecessary render cycle and a p
 
 ```jsx
 // ❌ BAD: unnecessary Effect + state
-const [fullName, setFullName] = useState('');
+const [fullName, setFullName] = useState("");
 useEffect(() => {
-  setFullName(firstName + ' ' + lastName);
+  setFullName(firstName + " " + lastName);
 }, [firstName, lastName]);
 
 // ✅ GOOD: compute during render
-const fullName = firstName + ' ' + lastName;
+const fullName = firstName + " " + lastName;
 ```
 
 ### Anti-Pattern 2: Event Logic Inside Effects
@@ -118,11 +118,11 @@ Using `useEffect` to reset state when a prop changes is fragile and obscures the
 ```jsx
 // ❌ BAD: Effect to reset state
 useEffect(() => {
-  setComment('');
+  setComment("");
 }, [userId]);
 
 // ✅ GOOD: pass key to force remount
-<Profile key={userId} userId={userId} />
+<Profile key={userId} userId={userId} />;
 ```
 
 ### Correct Structure
@@ -160,7 +160,9 @@ useEffect(() => {
   }
   fetchData();
 
-  return () => { ignore = true; };
+  return () => {
+    ignore = true;
+  };
 }, [person]);
 ```
 
