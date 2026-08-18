@@ -15,7 +15,7 @@ This is the source code for [bampouris.eu](https://bampouris.eu) — a modern pe
 
 ### Technical Features
 
-- **Astro 5** — Lightning-fast static site generation with zero JS by default
+- **Astro 7** — Lightning-fast static site generation with zero JS by default
 - **Tailwind CSS v4** — Utility-first styling with Vite integration
 - **TypeScript** — Full type safety across components and content collections
 - **MDX Support** — Enhanced Markdown with interactive component support
@@ -50,9 +50,9 @@ This is the source code for [bampouris.eu](https://bampouris.eu) — a modern pe
 │   │   ├── Footer.astro             # Site footer
 │   │   ├── FormattedDate.astro      # Date formatting
 │   │   └── Header.astro             # Navigation header
-│   ├── content/
-│   │   ├── config.ts                # Content collection config
-│   │   └── blog/                    # Markdown blog posts
+│   ├── content.config.ts            # Content collection config
+│   └── content/
+│       └── blog/                    # Markdown blog posts
 │   ├── layouts/
 │   │   ├── BlogPost.astro           # Blog post layout
 │   │   └── Layout.astro             # Base layout
@@ -151,13 +151,13 @@ The tech stack is configured in `src/components/home/SkillsMarquee.astro` — ad
 
 ### Content Collections
 
-Configure content schemas in `src/content/config.ts` — Astro provides type-safe access to your Markdown frontmatter.
+Configure content schemas in `src/content.config.ts` — Astro provides type-safe access to your Markdown frontmatter.
 
 ## 🛠️ Tech Stack
 
 | Technology                                    | Purpose                                        |
 | --------------------------------------------- | ---------------------------------------------- |
-| [Astro 5](https://astro.build/)               | Static site generator with island architecture |
+| [Astro 7](https://astro.build/)               | Static site generator with island architecture |
 | [Tailwind CSS v4](https://tailwindcss.com/)   | Utility-first styling framework                |
 | [TypeScript](https://www.typescriptlang.org/) | Type-safe JavaScript                           |
 | [MDX](https://mdxjs.com/)                     | Enhanced Markdown with JSX support             |
