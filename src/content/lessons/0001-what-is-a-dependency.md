@@ -63,7 +63,7 @@ class PriceService {
 
 Ask one question. **What does this class need that it does not own?**
 
-The answer is the network. `fetch` is a [dependency](/lessons/dependency-injection/glossary/#dependency): something the module needs to do its job but should not decide for itself.
+The answer is the network. `fetch` is a [dependency](/courses/dependency-injection/glossary/#dependency): something the module needs to do its job but should not decide for itself.
 
 The class works, but two choices are now welded together:
 
@@ -74,7 +74,7 @@ The class works, but two choices are now welded together:
 
 A class can use a dependency without owning the decision about which implementation to use. If changing the transport means editing the service, the service is coupled to a concrete detail.
 
-> **Coupling** is how far a change travels. Here, changing how prices are fetched means editing the class itself. The service and transport are tightly coupled because they share concrete details, not only a job description. See the [coupling glossary entry](/lessons/dependency-injection/glossary/#coupling).
+> **Coupling** is how far a change travels. Here, changing how prices are fetched means editing the class itself. The service and transport are tightly coupled because they share concrete details, not only a job description. See the [coupling glossary entry](/courses/dependency-injection/glossary/#coupling).
 
 ## 2. Move the dependency into the constructor
 
@@ -91,7 +91,7 @@ class PriceService {
 }
 ```
 
-The function parameter is [constructor injection](/lessons/dependency-injection/glossary/#constructor-injection). The choice of transport moved out of the class and to the code that builds it.
+The function parameter is [constructor injection](/courses/dependency-injection/glossary/#constructor-injection). The choice of transport moved out of the class and to the code that builds it.
 
 The caller can now wire the real transport at the application edge:
 
@@ -178,7 +178,7 @@ const price = await offlineService.loadPrice("p-042");
   >$ waiting. Choose a transport.</pre>
 </div>
 
-The class source stayed the same. The behaviour changed at the wiring. That is [testability](/lessons/dependency-injection/glossary/#fake) as a result of the design, not of a mocking tool.
+The class source stayed the same. The behaviour changed at the wiring. That is [testability](/courses/dependency-injection/glossary/#fake) as a result of the design, not of a mocking tool.
 
 ## 4. Retrieve the idea
 
@@ -278,7 +278,7 @@ Try to answer these questions before opening the model answers:
 - [Dependency Injection vs Dependency Inversion vs Inversion of Control, SSENSE Tech](https://medium.com/ssense-tech/dependency-injection-vs-dependency-inversion-vs-inversion-of-control-lets-set-the-record-straight-5dc818dc32d1). This article walks through a TypeScript refactor.
 - [InversionOfControl, Martin Fowler](https://martinfowler.com/bliki/InversionOfControl.html). It explains the question of who calls whom.
 - [DIP in the Wild, Brett L. Schuchert](https://martinfowler.com/articles/dipInTheWild.html). It separates wiring, direction, and shape.
-- Review the [course glossary](/lessons/dependency-injection/glossary/) and the [curated resources](/lessons/dependency-injection/resources/) before the next lesson.
+- Review the [course glossary](/courses/dependency-injection/glossary/) and the [curated resources](/courses/dependency-injection/resources/) before the next lesson.
 
 ## Sources
 

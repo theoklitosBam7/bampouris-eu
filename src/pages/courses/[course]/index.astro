@@ -38,7 +38,7 @@ const orderedLessons = [...data.plannedLessons].sort(
   <head>
     <BaseHead
       description={data.description}
-      title={`${data.title} | Lessons`}
+      title={`${data.title} | Learning library`}
     />
   </head>
   <body class="grain-overlay">
@@ -47,7 +47,7 @@ const orderedLessons = [...data.plannedLessons].sort(
     <main class="course-main">
       <header class="course-hero">
         <div class="container-narrow">
-          <a class="breadcrumb" href="/lessons/">
+          <a class="breadcrumb" href="/courses/">
             <svg
               aria-hidden="true"
               fill="none"
@@ -61,7 +61,7 @@ const orderedLessons = [...data.plannedLessons].sort(
             >
               <path d="m15 18-6-6 6-6"></path>
             </svg>
-            All lessons
+            Learning library
           </a>
 
           <div class="course-kicker">
@@ -76,8 +76,8 @@ const orderedLessons = [...data.plannedLessons].sort(
             <Button href="#sequence" size="lg" variant="primary">
               View lesson sequence
             </Button>
-            <Button href="/lessons/" size="lg" variant="secondary">
-              Browse all lessons
+            <Button href="/courses/" size="lg" variant="secondary">
+              Browse all courses
             </Button>
           </div>
         </div>
@@ -245,7 +245,7 @@ const orderedLessons = [...data.plannedLessons].sort(
                     {lesson.status === "published" ? (
                       <a
                         class="lesson-link"
-                        href={`/lessons/${data.slug}/${lesson.slug}/`}
+                        href={`/courses/${data.slug}/${lesson.slug}/`}
                       >
                         Open lesson
                         <svg
@@ -278,8 +278,10 @@ const orderedLessons = [...data.plannedLessons].sort(
         <div class="container-wide">
           <Card class="details-card" hover="none" padding="lg">
             <div aria-label="Course references" class="course-reference-links">
-              <a href={`/lessons/${data.slug}/glossary/`}>Course glossary</a>
-              <a href={`/lessons/${data.slug}/resources/`}>Curated resources</a>
+              <a href={`/courses/${data.slug}/glossary/`}>Course glossary</a>
+              <a href={`/courses/${data.slug}/resources/`}>
+                Curated resources
+              </a>
             </div>
             <h2 id="sources-title">Further reading</h2>
             <SourceList class="source-list" sources={data.sources} />

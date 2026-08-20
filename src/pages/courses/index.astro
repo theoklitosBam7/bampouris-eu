@@ -19,7 +19,7 @@ const courses = (await getCollection("courses")).sort((a, b) =>
   <head>
     <BaseHead
       description="Courses on TypeScript and frontend engineering for software engineers."
-      title="Lessons | Theoklitos Bampouris"
+      title="Learning library | Theoklitos Bampouris"
     />
   </head>
   <body class="grain-overlay">
@@ -29,10 +29,10 @@ const courses = (await getCollection("courses")).sort((a, b) =>
       <section class="lessons-hero">
         <div class="container-narrow">
           <span class="lessons-label">Learning library</span>
-          <h1 class="lessons-title">Lessons for working engineers</h1>
+          <h1 class="lessons-title">Courses for working engineers</h1>
           <p class="lessons-description">
             Courses explain the concepts behind frontend tools with examples.
-            Take the lessons in order, one at a time.
+            Take each course's lessons in order, one at a time.
           </p>
           <Button href="#courses" size="lg" variant="primary">
             Browse courses
@@ -59,7 +59,7 @@ const courses = (await getCollection("courses")).sort((a, b) =>
                 <Card
                   class="course-card"
                   hover="lift"
-                  href={`/lessons/${course.data.slug}/`}
+                  href={`/courses/${course.data.slug}/`}
                   padding="lg"
                 >
                   <div class="course-card-header">

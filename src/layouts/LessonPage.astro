@@ -41,7 +41,7 @@ const { data } = lesson;
     >
       <header class="lesson-hero">
         <div class="container-narrow">
-          <a class="breadcrumb" href={`/lessons/${course.data.slug}/`}>
+          <a class="breadcrumb" href={`/courses/${course.data.slug}/`}>
             <svg
               aria-hidden="true"
               fill="none"
@@ -181,10 +181,10 @@ const { data } = lesson;
       >
         <div class="container-narrow">
           <div class="lesson-reference-links">
-            <a href={`/lessons/${course.data.slug}/glossary/`}
+            <a href={`/courses/${course.data.slug}/glossary/`}
               >Open the course glossary</a
             >
-            <a href={`/lessons/${course.data.slug}/resources/`}
+            <a href={`/courses/${course.data.slug}/resources/`}
               >Browse curated resources</a
             >
           </div>
@@ -207,7 +207,7 @@ const { data } = lesson;
             previous ? (
               <a
                 class="lesson-navigation-link"
-                href={`/lessons/${course.data.slug}/${previous.id}/`}
+                href={`/courses/${course.data.slug}/${previous.id}/`}
               >
                 <span>Previous lesson</span>
                 <strong>{previous.data.title}</strong>
@@ -215,7 +215,7 @@ const { data } = lesson;
             ) : (
               <a
                 class="lesson-navigation-link lesson-navigation-course"
-                href={`/lessons/${course.data.slug}/`}
+                href={`/courses/${course.data.slug}/`}
               >
                 <span>Course overview</span>
                 <strong>{course.data.title}</strong>
@@ -226,7 +226,7 @@ const { data } = lesson;
             next && (
               <a
                 class="lesson-navigation-link lesson-navigation-next"
-                href={`/lessons/${course.data.slug}/${next.id}/`}
+                href={`/courses/${course.data.slug}/${next.id}/`}
               >
                 <span>Next lesson</span>
                 <strong>{next.data.title}</strong>
