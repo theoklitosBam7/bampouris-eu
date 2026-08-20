@@ -112,7 +112,7 @@ No interface was introduced, and none was needed. Interfaces and abstractions ar
 
 The service below is unchanged between the two examples. Only the constructor argument changes. One transport uses the network; the other is an offline fake.
 
-### Network-dependent example
+### Explanatory network-dependent example
 
 This transport can fail when the page has no `/api/price/:id` endpoint. It is shown to explain the coupling; it is **not an offline demo and does not run in this lesson**:
 
@@ -143,6 +143,41 @@ const price = await offlineService.loadPrice("p-042");
 // 1290
 ```
 
+<div
+  class="lesson-demo"
+  data-demo-kind="dependency-injection"
+  data-lesson-demo
+>
+  <div class="lesson-demo-heading">
+    <span class="lesson-interaction-label">Offline demonstration</span>
+    <h4>Run the service with an injected transport</h4>
+  </div>
+  <p>
+    The class stays the same. Choose a transport to see how the wiring changes
+    its behaviour.
+  </p>
+  <p class="lesson-demo-note" data-demo-network-note>
+    <strong>Explanatory network-dependent example.</strong> The real transport is
+    shown above but never runs here. Simulate its failure to see the same
+    coupling without a network request.
+  </p>
+  <div class="lesson-demo-controls">
+    <button data-demo-action="network" type="button">
+      Simulate real transport failure
+    </button>
+    <button data-demo-action="fake" type="button">
+      Call with injected fake
+    </button>
+  </div>
+  <pre
+    aria-atomic="true"
+    aria-live="polite"
+    class="lesson-demo-output"
+    data-demo-output
+    role="status"
+  >$ waiting. Choose a transport.</pre>
+</div>
+
 The class source stayed the same. The behaviour changed at the wiring. That is [testability](/lessons/dependency-injection/glossary/#fake) as a result of the design, not of a mocking tool.
 
 ## 4. Retrieve the idea
@@ -153,6 +188,63 @@ Try to answer these questions before opening the model answers:
 2. What exactly does constructor injection change in the `after` code?
 3. What lets one class produce two different behaviours?
 4. Which symptom most directly shows that the `before` class is tightly coupled?
+
+<div class="lesson-quiz" data-lesson-quiz>
+  <script type="application/json">
+    {
+      "title": "Four-question retrieval quiz",
+      "questions": [
+        {
+          "question": "In this lesson's terms, what counts as a dependency of a module?",
+          "options": [
+            "A needed thing it does not own",
+            "A needed thing it does not make",
+            "A needed thing it does not name",
+            "A needed thing it does not use"
+          ],
+          "answer": 0,
+          "explain": "A dependency is something the module needs but does not control, such as fetch, storage, or the clock. The module can import and name it. It must not own the choice."
+        },
+        {
+          "question": "What exactly does constructor injection change in the after code?",
+          "options": [
+            "Dependencies now arrive as constructor parameters",
+            "Dependencies appear as compiled class fields",
+            "Dependencies return as function call outputs",
+            "Dependencies vanish as inferred generic types"
+          ],
+          "answer": 0,
+          "explain": "The class used to grab the dependency. Now the dependency arrives through the constructor. The class signature tells the reader what it needs."
+        },
+        {
+          "question": "In the demo, what lets one class produce two different behaviours?",
+          "options": [
+            "The injected dependency is swapped",
+            "The class source is edited",
+            "The network itself is repaired",
+            "The test runner is configured"
+          ],
+          "answer": 0,
+          "explain": "The class stays the same. The constructor argument changes. That is the key idea in DI."
+        },
+        {
+          "question": "Which symptom most directly shows the before class is tightly coupled?",
+          "options": [
+            "Tests need the real network",
+            "Types need the real runtime",
+            "Bundles need the real server",
+            "Workers need the real browser"
+          ],
+          "answer": 0,
+          "explain": "No network means no test. The class cannot run without its concrete transport. Coupling is measured by what a change or a test must bring with it."
+        }
+      ]
+    }
+  </script>
+  <noscript>
+    <p>Enable JavaScript to answer this quiz and receive feedback.</p>
+  </noscript>
+</div>
 
 <details class="lesson-reveal">
   <summary>Show model answers</summary>

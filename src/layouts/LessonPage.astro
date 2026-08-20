@@ -33,7 +33,12 @@ const { data } = lesson;
   <body class="grain-overlay">
     <Header />
 
-    <main class="lesson-main">
+    <main
+      class="lesson-main"
+      data-course={course.data.slug}
+      data-lesson={lesson.id}
+      data-lesson-page
+    >
       <header class="lesson-hero">
         <div class="container-narrow">
           <a class="breadcrumb" href={`/lessons/${course.data.slug}/`}>
@@ -135,6 +140,42 @@ const { data } = lesson;
       </article>
 
       <section
+        aria-labelledby="lesson-completion-title"
+        class="lesson-completion-section"
+        data-lesson-completion
+      >
+        <div class="container-narrow">
+          <div class="lesson-completion-card">
+            <div>
+              <span class="lesson-interaction-label">Optional progress</span>
+              <h2 id="lesson-completion-title">Lesson completion</h2>
+              <p>
+                Mark this lesson complete. The setting stays in this browser.
+                You do not need an account, and the site does not send it to a
+                server.
+              </p>
+            </div>
+            <button
+              aria-pressed="false"
+              class="lesson-completion-toggle no-print"
+              data-lesson-completion-toggle
+              type="button"
+            >
+              <span data-lesson-completion-label>Mark lesson complete</span>
+            </button>
+            <p
+              aria-live="polite"
+              class="lesson-completion-status"
+              data-lesson-completion-status
+              role="status"
+            >
+              Not marked complete. This setting stays in this browser.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section
         aria-labelledby="lesson-sources-title"
         class="lesson-sources-section"
       >
@@ -197,6 +238,14 @@ const { data } = lesson;
     </main>
 
     <Footer />
+
+    <script>
+      import { initializeDependencyInjectionDemo } from "@/scripts/lessons/demos/dependency-injection";
+      import { initializeLessonInteractions } from "@/scripts/lessons/interactions";
+
+      initializeLessonInteractions();
+      initializeDependencyInjectionDemo();
+    </script>
   </body>
 </html>
 
@@ -591,6 +640,276 @@ const { data } = lesson;
     }
   }
 
+  .lesson-interaction-label,
+  .lesson-body :global(.lesson-interaction-label) {
+    display: block;
+    margin-bottom: var(--space-2);
+    color: var(--color-text-tertiary);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .lesson-body :global(.lesson-quiz),
+  .lesson-body :global(.lesson-demo) {
+    margin: var(--space-10) 0;
+    padding: var(--space-6);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--radius-xl);
+    background: var(--color-bg-secondary);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .lesson-body :global(.lesson-quiz),
+    .lesson-body :global(.lesson-demo),
+    .lesson-completion-card {
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  .lesson-body :global(.lesson-quiz-title),
+  .lesson-body :global(.lesson-demo-heading h4) {
+    margin: 0 0 var(--space-6);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .lesson-body :global(.lesson-quiz-question) {
+    margin: 0 0 var(--space-6);
+    padding: 0;
+    border: 0;
+  }
+
+  .lesson-body :global(.lesson-quiz-question:last-of-type) {
+    margin-bottom: 0;
+  }
+
+  .lesson-body :global(.lesson-quiz-question-text) {
+    margin-bottom: var(--space-3);
+    color: var(--color-text-primary);
+    font-size: var(--text-base);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .lesson-body :global(.lesson-quiz-option) {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    min-height: 2.75rem;
+    margin-bottom: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-text-tertiary);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+    line-height: 1.5;
+  }
+
+  .lesson-body :global(.lesson-quiz-option:last-of-type) {
+    margin-bottom: 0;
+  }
+
+  .lesson-body :global(.lesson-quiz-option:hover:not(.is-locked)) {
+    border-color: var(--color-accent);
+    color: var(--color-text-primary);
+  }
+
+  .lesson-body :global(.lesson-quiz-option input) {
+    flex: 0 0 auto;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0.2rem 0 0;
+    accent-color: var(--color-accent);
+  }
+
+  .lesson-body :global(.lesson-quiz-option.is-locked) {
+    cursor: default;
+  }
+
+  .lesson-body :global(.lesson-quiz-option.is-correct) {
+    border-color: var(--color-success, #15803d);
+    background: rgba(21, 128, 61, 0.1);
+  }
+
+  .lesson-body :global(.lesson-quiz-option.is-incorrect) {
+    border-color: var(--color-error, #b91c1c);
+    background: rgba(185, 28, 28, 0.1);
+  }
+
+  .lesson-body :global(.lesson-quiz-option-state) {
+    margin-left: auto;
+    color: var(--color-text-primary);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .lesson-body :global(.lesson-quiz-feedback) {
+    margin: var(--space-4) 0 0;
+    padding-top: var(--space-4);
+    border-top: 1px dashed var(--color-text-tertiary);
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+    line-height: 1.7;
+  }
+
+  .lesson-body :global(.lesson-quiz-score) {
+    margin: var(--space-6) 0 0;
+    color: var(--color-text-primary);
+    font-size: var(--text-base);
+    font-weight: 600;
+    line-height: 1.6;
+  }
+
+  .lesson-body :global(.lesson-quiz-retry),
+  .lesson-body :global(.lesson-demo-controls button),
+  .lesson-completion-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-lg);
+    background: transparent;
+    color: var(--color-accent);
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    line-height: 1.4;
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast),
+      border-color var(--transition-fast);
+  }
+
+  .lesson-body :global(.lesson-quiz-retry) {
+    margin-top: var(--space-4);
+  }
+
+  .lesson-body :global(.lesson-quiz-retry:hover),
+  .lesson-body :global(.lesson-demo-controls button:hover),
+  .lesson-completion-toggle:hover {
+    background: var(--color-accent);
+    color: white;
+  }
+
+  .lesson-body :global(.lesson-quiz-retry:disabled),
+  .lesson-body :global(.lesson-demo-controls button:disabled) {
+    cursor: wait;
+    opacity: 0.6;
+  }
+
+  .lesson-body :global(.lesson-demo-heading h4) {
+    margin-bottom: var(--space-3);
+  }
+
+  .lesson-body :global(.lesson-demo p) {
+    margin-bottom: var(--space-4);
+  }
+
+  .lesson-body :global(.lesson-demo-note) {
+    padding: var(--space-4);
+    border-left: 3px solid var(--color-accent-warm);
+    background: var(--color-bg-primary);
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+    line-height: 1.6;
+  }
+
+  .lesson-body :global(.lesson-demo-controls) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin: var(--space-5) 0;
+  }
+
+  .lesson-body :global(.lesson-demo-output) {
+    margin: var(--space-5) 0 0;
+    padding: var(--space-4);
+    border: 1px solid var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+
+  .lesson-completion-section {
+    padding: var(--space-10) 0;
+    background: var(--color-bg-secondary);
+  }
+
+  .lesson-completion-card {
+    display: grid;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--radius-xl);
+    background: var(--color-bg-primary);
+  }
+
+  .lesson-completion-card h2 {
+    margin: 0 0 var(--space-3);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+  }
+
+  .lesson-completion-card p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+    line-height: 1.6;
+  }
+
+  .lesson-completion-toggle {
+    justify-self: start;
+  }
+
+  .lesson-completion-toggle.is-complete {
+    background: var(--color-accent);
+    color: white;
+  }
+
+  .lesson-completion-status {
+    font-size: var(--text-sm) !important;
+  }
+
+  @media (min-width: 640px) {
+    .lesson-completion-card {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+    }
+
+    .lesson-completion-status {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .lesson-body :global(.lesson-demo-controls) {
+      flex-direction: column;
+    }
+
+    .lesson-body :global(.lesson-demo-controls button),
+    .lesson-body :global(.lesson-quiz-retry),
+    .lesson-completion-toggle {
+      width: 100%;
+    }
+  }
+
   @media print {
     .lesson-main {
       padding-top: 0;
@@ -599,6 +918,7 @@ const { data } = lesson;
     .lesson-hero,
     .lesson-details-section,
     .lesson-article,
+    .lesson-completion-section,
     .lesson-sources-section,
     .lesson-navigation {
       padding: var(--space-8) 0;
@@ -607,12 +927,18 @@ const { data } = lesson;
 
     .breadcrumb,
     .lesson-reference-links,
-    .lesson-navigation {
+    .lesson-navigation,
+    .lesson-completion-toggle,
+    .lesson-body :global(.lesson-demo-controls),
+    .lesson-body :global(.lesson-quiz-retry) {
       display: none;
     }
 
     .lesson-facts,
     .lesson-list-card,
+    .lesson-completion-card,
+    .lesson-body :global(.lesson-quiz),
+    .lesson-body :global(.lesson-demo),
     .lesson-body :global(pre),
     .lesson-body :global(.lesson-reveal) {
       break-inside: avoid;
