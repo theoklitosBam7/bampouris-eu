@@ -7,18 +7,11 @@ import Header from "@/components/Header.astro";
 import Button from "@/components/ui/Button.astro";
 import Card from "@/components/ui/Card.astro";
 import Tag from "@/components/ui/Tag.astro";
+import { formatDuration, formatStatus } from "@/utils/lessons";
 
 const courses = (await getCollection("courses")).sort((a, b) =>
   a.data.title.localeCompare(b.data.title),
 );
-
-const formatDuration = (minutes: number) =>
-  minutes >= 60
-    ? `${Math.floor(minutes / 60)}h${minutes % 60 ? ` ${minutes % 60}m` : ""}`
-    : `${minutes} minutes`;
-
-const formatStatus = (status: string) =>
-  status.charAt(0).toUpperCase() + status.slice(1);
 ---
 
 <!doctype html>

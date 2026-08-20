@@ -22,10 +22,10 @@ prerequisites:
 pilotScope:
   included:
     - Course overview, objectives, and prerequisites.
+    - The first lesson with its glossary and curated resources.
     - Planned six-lesson sequence with publication status for each lesson.
-    - Further reading for continued study.
   excluded:
-    - Lesson pages and glossary; these will be published in later pilot updates.
+    - The remaining five lesson pages and course completion tracking.
 publicationDate: 2026-08-19
 updatedDate: 2026-08-19
 sources:
@@ -45,7 +45,7 @@ plannedLessons:
     description: Identify a dependency and move the transport choice into the caller.
     durationMinutes: 15
     difficulty: Beginner
-    status: planned
+    status: published
     topics:
       - dependencies
       - coupling
@@ -109,4 +109,4 @@ plannedLessons:
 
 This short, self-study course is for software engineers who want to explain and apply dependency injection in TypeScript frontend code. It starts with a small example, then moves to abstractions, control flow, and application wiring.
 
-The public pilot begins with the course overview. Lesson content will be imported and reviewed in sequence. The cards below show the planned course order. Unpublished lesson routes are not available yet.
+The public pilot includes the course overview, the first lesson, the glossary, and curated resources. The cards below show the planned course order; only published lesson cards open a public lesson page.

@@ -1,0 +1,69 @@
+---
+import { type CollectionEntry, getCollection, render } from "astro:content";
+
+import LessonPage from "@/layouts/LessonPage.astro";
+
+type Course = CollectionEntry<"courses">;
+type Lesson = CollectionEntry<"lessons">;
+
+type Props = {
+  course: Course;
+  lesson: Lesson;
+  next?: Lesson;
+  previous?: Lesson;
+};
+
+export async function getStaticPaths() {
+  const [courses, lessons] = await Promise.all([
+    getCollection("courses"),
+    getCollection("lessons"),
+  ]);
+  const coursesBySlug = new Map(
+    courses.map((course) => [course.data.slug, course]),
+  );
+  const lessonsById = new Map(lessons.map((lesson) => [lesson.id, lesson]));
+
+  return lessons.flatMap((lesson) => {
+    if (lesson.data.status !== "published") {
+      return [];
+    }
+
+    const course = coursesBySlug.get(lesson.data.course);
+    if (!course) {
+      return [];
+    }
+
+    const publishedLessons = course.data.plannedLessons
+      .filter(
+        (summary) =>
+          summary.status === "published" && lessonsById.has(summary.slug),
+      )
+      .sort((a, b) => a.lessonNumber - b.lessonNumber)
+      .map((summary) => lessonsById.get(summary.slug))
+      .filter((entry): entry is Lesson => entry !== undefined);
+    const currentIndex = publishedLessons.findIndex(
+      (entry) => entry.id === lesson.id,
+    );
+
+    return {
+      params: {
+        course: course.data.slug,
+        lesson: lesson.id,
+      },
+      props: {
+        course,
+        lesson,
+        next: publishedLessons[currentIndex + 1],
+        previous: publishedLessons[currentIndex - 1],
+      },
+    };
+  });
+}
+
+const { course, lesson, next, previous } = Astro.props;
+const { Content } = await render(lesson);
+---
+
+<LessonPage course={course} lesson={lesson} next={next} previous={previous}>
+  <Content />
+</LessonPage>

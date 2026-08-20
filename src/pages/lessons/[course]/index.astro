@@ -5,9 +5,11 @@ import BaseHead from "@/components/BaseHead.astro";
 import Footer from "@/components/Footer.astro";
 import FormattedDate from "@/components/FormattedDate.astro";
 import Header from "@/components/Header.astro";
+import SourceList from "@/components/lessons/SourceList.astro";
 import Button from "@/components/ui/Button.astro";
 import Card from "@/components/ui/Card.astro";
 import Tag from "@/components/ui/Tag.astro";
+import { formatDuration, formatStatus } from "@/utils/lessons";
 
 type Props = {
   course: CollectionEntry<"courses">;
@@ -25,14 +27,6 @@ export async function getStaticPaths() {
 const { course } = Astro.props;
 const { Content } = await render(course);
 const { data } = course;
-
-const formatDuration = (minutes: number) =>
-  minutes >= 60
-    ? `${Math.floor(minutes / 60)}h${minutes % 60 ? ` ${minutes % 60}m` : ""}`
-    : `${minutes} minutes`;
-
-const formatStatus = (status: string) =>
-  status.charAt(0).toUpperCase() + status.slice(1);
 
 const orderedLessons = [...data.plannedLessons].sort(
   (a, b) => a.lessonNumber - b.lessonNumber,
@@ -283,37 +277,12 @@ const orderedLessons = [...data.plannedLessons].sort(
       <section aria-labelledby="sources-title" class="details-section">
         <div class="container-wide">
           <Card class="details-card" hover="none" padding="lg">
+            <div aria-label="Course references" class="course-reference-links">
+              <a href={`/lessons/${data.slug}/glossary/`}>Course glossary</a>
+              <a href={`/lessons/${data.slug}/resources/`}>Curated resources</a>
+            </div>
             <h2 id="sources-title">Further reading</h2>
-            <ul class="source-list">
-              {
-                data.sources.map((source) => (
-                  <li>
-                    <a
-                      href={source.href}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      {source.label}
-                      <svg
-                        aria-hidden="true"
-                        fill="none"
-                        height="14"
-                        stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        viewBox="0 0 24 24"
-                        width="14"
-                      >
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
-                        <polyline points="15 3 21 3 21 9" />
-                        <line x1="10" x2="21" y1="14" y2="3" />
-                      </svg>
-                    </a>
-                  </li>
-                ))
-              }
-            </ul>
+            <SourceList class="source-list" sources={data.sources} />
           </Card>
 
           <p class="ai-disclosure">
@@ -346,7 +315,7 @@ const orderedLessons = [...data.plannedLessons].sort(
 
   .breadcrumb,
   .lesson-link,
-  .source-list a {
+  :global(.source-list a) {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
@@ -362,7 +331,7 @@ const orderedLessons = [...data.plannedLessons].sort(
 
   .breadcrumb:hover,
   .lesson-link:hover,
-  .source-list a:hover {
+  :global(.source-list a):hover {
     color: var(--accent-dark);
   }
 
@@ -519,7 +488,7 @@ const orderedLessons = [...data.plannedLessons].sort(
   }
 
   .check-list,
-  .source-list {
+  :global(.source-list) {
     display: grid;
     gap: var(--space-3);
     margin: 0;
@@ -771,7 +740,29 @@ const orderedLessons = [...data.plannedLessons].sort(
     font-size: var(--text-2xl);
   }
 
-  .source-list a {
+  .course-reference-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--color-bg-secondary);
+  }
+
+  .course-reference-links a {
+    color: var(--color-accent);
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .course-reference-links a:hover {
+    color: var(--accent-dark);
+  }
+
+  :global(.source-list a) {
     font-size: var(--text-base);
     line-height: 1.5;
     text-decoration: underline;
@@ -779,7 +770,7 @@ const orderedLessons = [...data.plannedLessons].sort(
     text-underline-offset: 3px;
   }
 
-  .source-list a svg {
+  :global(.source-list a) svg {
     flex: 0 0 auto;
   }
 
