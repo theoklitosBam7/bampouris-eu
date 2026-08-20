@@ -4,6 +4,7 @@ import { SITE_TITLE } from "@/consts";
 const navLinks = [
   { ariaLabel: "Go to homepage", href: "/", label: "Home" },
   { ariaLabel: "View blog posts", href: "/blog", label: "Blog" },
+  { ariaLabel: "View lessons", href: "/lessons", label: "Lessons" },
 ];
 
 const socialLinks = [
@@ -28,6 +29,8 @@ const socialLinks = [
 ];
 
 const currentPath = Astro.url.pathname;
+const isActive = (href: string) =>
+  currentPath === href || (href !== "/" && currentPath.startsWith(`${href}/`));
 ---
 
 <header class="header" id="header">
@@ -45,9 +48,9 @@ const currentPath = Astro.url.pathname;
           navLinks.map((link) => (
             <li class="nav-item">
               <a
-                aria-current={currentPath === link.href ? "page" : undefined}
+                aria-current={isActive(link.href) ? "page" : undefined}
                 aria-label={link.ariaLabel}
-                class={`nav-link ${currentPath === link.href || (link.href !== "/" && currentPath.startsWith(link.href)) ? "is-active" : ""}`}
+                class={`nav-link ${isActive(link.href) ? "is-active" : ""}`}
                 href={link.href}
               >
                 {link.label}
@@ -138,8 +141,9 @@ const currentPath = Astro.url.pathname;
           navLinks.map((link) => (
             <li class="mobile-nav-item">
               <a
+                aria-current={isActive(link.href) ? "page" : undefined}
                 aria-label={link.ariaLabel}
-                class={`mobile-nav-link ${currentPath === link.href ? "is-active" : ""}`}
+                class={`mobile-nav-link ${isActive(link.href) ? "is-active" : ""}`}
                 href={link.href}
               >
                 {link.label}
@@ -452,6 +456,12 @@ const currentPath = Astro.url.pathname;
 
   .mobile-social-link:hover {
     color: var(--color-accent);
+  }
+
+  @media print {
+    .header {
+      display: none;
+    }
   }
 </style>
 
