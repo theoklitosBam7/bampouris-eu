@@ -5,11 +5,17 @@ import BaseHead from "@/components/BaseHead.astro";
 import Footer from "@/components/Footer.astro";
 import FormattedDate from "@/components/FormattedDate.astro";
 import Header from "@/components/Header.astro";
+import LessonFilters from "@/components/lessons/LessonFilters.astro";
 import SourceList from "@/components/lessons/SourceList.astro";
 import Button from "@/components/ui/Button.astro";
 import Card from "@/components/ui/Card.astro";
 import Tag from "@/components/ui/Tag.astro";
-import { formatDuration, formatStatus } from "@/utils/lessons";
+import {
+  formatDuration,
+  formatStatus,
+  getLessonPath,
+  getPublishedLessonsForCourse,
+} from "@/utils/lessons";
 
 type Props = {
   course: CollectionEntry<"courses">;
@@ -27,10 +33,20 @@ export async function getStaticPaths() {
 const { course } = Astro.props;
 const { Content } = await render(course);
 const { data } = course;
+const lessons = await getCollection("lessons");
+const publishedLessonsBySlug = new Map(
+  getPublishedLessonsForCourse(course, lessons).map((lesson) => [
+    lesson.data.slug,
+    lesson,
+  ]),
+);
 
 const orderedLessons = [...data.plannedLessons].sort(
   (a, b) => a.lessonNumber - b.lessonNumber,
 );
+const lessonTopics = [
+  ...new Set(orderedLessons.flatMap((lesson) => lesson.topics)),
+].sort();
 ---
 
 <!doctype html>
@@ -211,64 +227,76 @@ const orderedLessons = [...data.plannedLessons].sort(
             </p>
           </div>
 
-          <ol class="lesson-list">
+          <LessonFilters indexId="courseLessonIndex" topics={lessonTopics} />
+
+          <ol class="lesson-list" id="courseLessonIndex">
             {
-              orderedLessons.map((lesson) => (
-                <li
-                  class={`lesson-card ${lesson.status === "published" ? "is-published" : "is-planned"}`}
-                >
-                  <div aria-hidden="true" class="lesson-number">
-                    {String(lesson.lessonNumber).padStart(4, "0")}
-                  </div>
-                  <div class="lesson-content">
-                    <div class="lesson-heading">
-                      <h3>{lesson.title}</h3>
-                      <Tag
-                        size="sm"
-                        variant={
-                          lesson.status === "published" ? "accent" : "outline"
-                        }
-                      >
-                        {lesson.status === "published"
-                          ? "Published"
-                          : "Planned"}
-                      </Tag>
+              orderedLessons.map((lesson) => {
+                const publishedLesson = publishedLessonsBySlug.get(lesson.slug);
+
+                return (
+                  <li
+                    class={`lesson-card ${lesson.status === "published" ? "is-published" : "is-planned"}`}
+                    data-difficulty={lesson.difficulty}
+                    data-lesson-item
+                    data-topics={lesson.topics.join(",")}
+                  >
+                    <div aria-hidden="true" class="lesson-number">
+                      {String(lesson.lessonNumber).padStart(4, "0")}
                     </div>
-                    <p>{lesson.description}</p>
-                    <div class="lesson-details">
-                      <span>{formatDuration(lesson.durationMinutes)}</span>
-                      <span>{lesson.difficulty}</span>
-                      {lesson.topics.map((topic) => (
-                        <span>{topic}</span>
-                      ))}
-                    </div>
-                    {lesson.status === "published" ? (
-                      <a
-                        class="lesson-link"
-                        href={`/courses/${data.slug}/${lesson.slug}/`}
-                      >
-                        Open lesson
-                        <svg
-                          aria-hidden="true"
-                          fill="none"
-                          height="16"
-                          stroke="currentColor"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          viewBox="0 0 24 24"
-                          width="16"
+                    <div class="lesson-content">
+                      <div class="lesson-heading">
+                        <h3>{lesson.title}</h3>
+                        <Tag
+                          size="sm"
+                          variant={
+                            lesson.status === "published" ? "accent" : "outline"
+                          }
                         >
-                          <path d="M5 12h14" />
-                          <path d="m12 5 7 7-7 7" />
-                        </svg>
-                      </a>
-                    ) : (
-                      <span class="lesson-unavailable">Not published</span>
-                    )}
-                  </div>
-                </li>
-              ))
+                          {lesson.status === "published"
+                            ? "Published"
+                            : "Planned"}
+                        </Tag>
+                      </div>
+                      <p>{lesson.description}</p>
+                      <div class="lesson-details">
+                        <span>{formatDuration(lesson.durationMinutes)}</span>
+                        <span>{lesson.difficulty}</span>
+                        {lesson.topics.map((topic) => (
+                          <span>{topic}</span>
+                        ))}
+                      </div>
+                      {publishedLesson ? (
+                        <a
+                          class="lesson-link"
+                          href={getLessonPath(
+                            data.slug,
+                            publishedLesson.data.slug,
+                          )}
+                        >
+                          Open lesson
+                          <svg
+                            aria-hidden="true"
+                            fill="none"
+                            height="16"
+                            stroke="currentColor"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                            width="16"
+                          >
+                            <path d="M5 12h14" />
+                            <path d="m12 5 7 7-7 7" />
+                          </svg>
+                        </a>
+                      ) : (
+                        <span class="lesson-unavailable">Not published</span>
+                      )}
+                    </div>
+                  </li>
+                );
+              })
             }
           </ol>
         </div>

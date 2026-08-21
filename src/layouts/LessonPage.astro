@@ -6,8 +6,10 @@ import Footer from "@/components/Footer.astro";
 import FormattedDate from "@/components/FormattedDate.astro";
 import Header from "@/components/Header.astro";
 import SourceList from "@/components/lessons/SourceList.astro";
+import RelatedLinks from "@/components/RelatedLinks.astro";
 import Tag from "@/components/ui/Tag.astro";
-import { formatDuration, formatStatus } from "@/utils/lessons";
+import { LESSON_FEEDBACK_URL } from "@/consts";
+import { formatDuration, formatStatus, getLessonPath } from "@/utils/lessons";
 
 type Lesson = CollectionEntry<"lessons">;
 
@@ -16,10 +18,17 @@ type Props = {
   lesson: Lesson;
   next?: Lesson;
   previous?: Lesson;
+  relatedBlogPosts: CollectionEntry<"blog">[];
 };
 
-const { course, lesson, next, previous } = Astro.props;
+const { course, lesson, next, previous, relatedBlogPosts } = Astro.props;
 const { data } = lesson;
+const relatedBlogItems = relatedBlogPosts.map((post) => ({
+  description: post.data.description,
+  href: `/blog/${post.id}/`,
+  kind: "Blog article",
+  title: post.data.title,
+}));
 ---
 
 <!doctype html>
@@ -36,7 +45,7 @@ const { data } = lesson;
     <main
       class="lesson-main"
       data-course={course.data.slug}
-      data-lesson={lesson.id}
+      data-lesson={data.slug}
       data-lesson-page
     >
       <header class="lesson-hero">
@@ -175,6 +184,13 @@ const { data } = lesson;
         </div>
       </section>
 
+      <RelatedLinks
+        heading="Read the longer discussion"
+        headingId="related-blog-title"
+        items={relatedBlogItems}
+        label="Related blog content"
+      />
+
       <section
         aria-labelledby="lesson-sources-title"
         class="lesson-sources-section"
@@ -198,6 +214,21 @@ const { data } = lesson;
             <strong>AI assistance:</strong>
             {data.aiAssistanceDisclosure}
           </p>
+
+          <div class="lesson-feedback">
+            <h2>Help improve this lesson</h2>
+            <p>
+              Found an error or have an improvement to suggest? Share it in the
+              public GitHub issue tracker.
+            </p>
+            <a
+              href={LESSON_FEEDBACK_URL}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Report an error or suggest an improvement
+            </a>
+          </div>
         </div>
       </section>
 
@@ -207,7 +238,7 @@ const { data } = lesson;
             previous ? (
               <a
                 class="lesson-navigation-link"
-                href={`/courses/${course.data.slug}/${previous.id}/`}
+                href={getLessonPath(course.data.slug, previous.data.slug)}
               >
                 <span>Previous lesson</span>
                 <strong>{previous.data.title}</strong>
@@ -226,7 +257,7 @@ const { data } = lesson;
             next && (
               <a
                 class="lesson-navigation-link lesson-navigation-next"
-                href={`/courses/${course.data.slug}/${next.id}/`}
+                href={getLessonPath(course.data.slug, next.data.slug)}
               >
                 <span>Next lesson</span>
                 <strong>{next.data.title}</strong>
@@ -585,6 +616,35 @@ const { data } = lesson;
 
   .ai-disclosure strong {
     color: var(--color-text-secondary);
+  }
+
+  .lesson-feedback {
+    margin-top: var(--space-10);
+    padding: var(--space-6);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    border-radius: var(--radius-xl);
+    background: rgba(37, 99, 235, 0.05);
+  }
+
+  .lesson-feedback h2 {
+    margin-bottom: var(--space-3);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+  }
+
+  .lesson-feedback p {
+    margin-bottom: var(--space-4);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .lesson-feedback a {
+    color: var(--color-accent);
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   .lesson-navigation {

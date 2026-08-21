@@ -41,6 +41,7 @@ const lessonMetadataSchema = z.object({
   durationMinutes: z.number().int().positive(),
   lessonNumber: z.number().int().positive(),
   navigation: lessonNavigationSchema.optional(),
+  slug: z.string().min(1),
   objectives: z.array(z.string()).min(1),
   prerequisites: z.array(z.string()),
   publicationDate: z.coerce.date().optional(),
@@ -83,6 +84,7 @@ const blog = defineCollection({
       pubDate: z.coerce.date(),
       updatedDate: z.coerce.date().optional(),
       heroImage: image().optional(),
+      relatedLessons: z.array(z.string()).optional(),
       tags: z.array(z.string()).optional(),
     }),
 });

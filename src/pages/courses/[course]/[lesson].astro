@@ -2,7 +2,9 @@
 import { type CollectionEntry, getCollection, render } from "astro:content";
 
 import LessonPage from "@/layouts/LessonPage.astro";
+import { getPublishedLessonsForCourse } from "@/utils/lessons";
 
+type BlogPost = CollectionEntry<"blog">;
 type Course = CollectionEntry<"courses">;
 type Lesson = CollectionEntry<"lessons">;
 
@@ -11,59 +13,47 @@ type Props = {
   lesson: Lesson;
   next?: Lesson;
   previous?: Lesson;
+  relatedBlogPosts: BlogPost[];
 };
 
 export async function getStaticPaths() {
-  const [courses, lessons] = await Promise.all([
+  const [courses, lessons, blogPosts] = await Promise.all([
     getCollection("courses"),
     getCollection("lessons"),
+    getCollection("blog"),
   ]);
-  const coursesBySlug = new Map(
-    courses.map((course) => [course.data.slug, course]),
-  );
-  const lessonsById = new Map(lessons.map((lesson) => [lesson.id, lesson]));
 
-  return lessons.flatMap((lesson) => {
-    if (lesson.data.status !== "published") {
-      return [];
-    }
+  return courses.flatMap((course) => {
+    const publishedLessons = getPublishedLessonsForCourse(course, lessons);
 
-    const course = coursesBySlug.get(lesson.data.course);
-    if (!course) {
-      return [];
-    }
-
-    const publishedLessons = course.data.plannedLessons
-      .filter(
-        (summary) =>
-          summary.status === "published" && lessonsById.has(summary.slug),
-      )
-      .sort((a, b) => a.lessonNumber - b.lessonNumber)
-      .map((summary) => lessonsById.get(summary.slug))
-      .filter((entry): entry is Lesson => entry !== undefined);
-    const currentIndex = publishedLessons.findIndex(
-      (entry) => entry.id === lesson.id,
-    );
-
-    return {
+    return publishedLessons.map((lesson, currentIndex) => ({
       params: {
         course: course.data.slug,
-        lesson: lesson.id,
+        lesson: lesson.data.slug,
       },
       props: {
         course,
         lesson,
         next: publishedLessons[currentIndex + 1],
         previous: publishedLessons[currentIndex - 1],
+        relatedBlogPosts: blogPosts.filter((post) =>
+          post.data.relatedLessons?.includes(lesson.data.slug),
+        ),
       },
-    };
+    }));
   });
 }
 
-const { course, lesson, next, previous } = Astro.props;
+const { course, lesson, next, previous, relatedBlogPosts } = Astro.props;
 const { Content } = await render(lesson);
 ---
 
-<LessonPage course={course} lesson={lesson} next={next} previous={previous}>
+<LessonPage
+  course={course}
+  lesson={lesson}
+  next={next}
+  previous={previous}
+  relatedBlogPosts={relatedBlogPosts}
+>
   <Content />
 </LessonPage>

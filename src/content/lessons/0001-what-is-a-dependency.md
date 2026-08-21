@@ -5,6 +5,7 @@ description: Identify a dependency and move the transport choice into the caller
 difficulty: Beginner
 durationMinutes: 15
 lessonNumber: 1
+slug: 0001-what-is-a-dependency
 objectives:
   - Identify a dependency in a small frontend service.
   - Explain tight coupling with a concrete TypeScript example.
