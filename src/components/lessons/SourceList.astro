@@ -1,20 +1,20 @@
 ---
-interface Props {
-  class?: string;
-  sources: ReadonlyArray<Source>;
-}
-
-interface Source {
+interface LearnerSource {
   href: string;
   label: string;
 }
 
-const { class: className = "", sources } = Astro.props;
+interface Props {
+  class?: string;
+  learnerSources: ReadonlyArray<LearnerSource>;
+}
+
+const { class: className = "", learnerSources } = Astro.props;
 ---
 
 <ul class={className}>
   {
-    sources.map((source) => (
+    learnerSources.map((source) => (
       <li>
         <a href={source.href} rel="noopener noreferrer" target="_blank">
           {source.label}

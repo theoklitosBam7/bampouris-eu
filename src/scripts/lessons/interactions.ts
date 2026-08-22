@@ -195,8 +195,8 @@ const renderQuiz = (root: HTMLElement, data: QuizData, quizId: string) => {
             score.textContent =
               `You scored ${correctAnswers} of ${data.questions.length}. ` +
               (correctAnswers === data.questions.length
-                ? "Clean sweep. Now try the say-it-aloud prompts without looking."
-                : "Read the explanations again, then retry. The effort helps you remember.");
+                ? "Clean sweep. Now try the retrieval prompts without looking."
+                : "Read the explanations again, then retry from memory.");
           }
         });
 

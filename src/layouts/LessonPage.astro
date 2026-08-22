@@ -106,26 +106,18 @@ const relatedBlogItems = relatedBlogPosts.map((post) => ({
                 <span>Status</span>
                 <strong>{formatStatus(data.status)}</strong>
               </div>
-              {
-                data.publicationDate && (
-                  <div>
-                    <span>Published</span>
-                    <strong>
-                      <FormattedDate date={data.publicationDate} />
-                    </strong>
-                  </div>
-                )
-              }
-              {
-                data.updatedDate && (
-                  <div>
-                    <span>Updated</span>
-                    <strong>
-                      <FormattedDate date={data.updatedDate} />
-                    </strong>
-                  </div>
-                )
-              }
+              <div>
+                <span>Published</span>
+                <strong>
+                  <FormattedDate date={data.publicationDate} />
+                </strong>
+              </div>
+              <div>
+                <span>Updated</span>
+                <strong>
+                  <FormattedDate date={data.updatedDate} />
+                </strong>
+              </div>
               <div>
                 <span>Difficulty</span>
                 <strong>{data.difficulty}</strong>
@@ -234,8 +226,8 @@ const relatedBlogItems = relatedBlogPosts.map((post) => ({
           </div>
 
           <div class="lesson-sources">
-            <h2 id="lesson-sources-title">Sources for this lesson</h2>
-            <SourceList sources={data.sources} />
+            <h2 id="lesson-sources-title">Cited sources for this lesson</h2>
+            <SourceList learnerSources={data.learnerSources} />
           </div>
 
           <p class="ai-disclosure">

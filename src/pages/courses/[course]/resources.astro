@@ -2,7 +2,10 @@
 import { type CollectionEntry, getCollection, render } from "astro:content";
 
 import LessonReferencePage from "@/layouts/LessonReferencePage.astro";
-import { validateLessonCatalog } from "@/utils/lessons";
+import {
+  getCourseReferencePaths,
+  validateLessonCatalog,
+} from "@/utils/lessons";
 
 type Course = CollectionEntry<"courses">;
 type CourseReference = CollectionEntry<"courseReferences">;
@@ -20,26 +23,11 @@ export async function getStaticPaths() {
   ]);
   validateLessonCatalog({ courseReferences, courses, lessons });
 
-  const coursesBySlug = new Map(
-    courses.map((course) => [course.data.slug, course]),
-  );
-
-  return courseReferences
-    .filter((reference) => reference.data.kind === "further-reading")
-    .map((reference) => {
-      const course = coursesBySlug.get(reference.data.course);
-
-      if (!course) {
-        throw new Error(
-          `Further-reading reference "${reference.id}" has no matching course.`,
-        );
-      }
-
-      return {
-        params: { course: course.data.slug },
-        props: { course, reference },
-      };
-    });
+  return getCourseReferencePaths({
+    courseReferences,
+    courses,
+    kind: "further-reading",
+  });
 }
 
 const { course, reference } = Astro.props;

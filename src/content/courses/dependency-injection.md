@@ -28,7 +28,7 @@ pilotScope:
     - The remaining five lesson pages and course completion tracking.
 publicationDate: 2026-08-19
 updatedDate: 2026-08-19
-sources:
+learnerSources:
   - label: "Martin Fowler: Inversion of Control Containers and the Dependency Injection pattern"
     href: https://martinfowler.com/articles/injection.html
   - label: "Dependency Injection Principles, Practices, and Patterns: chapter 1"

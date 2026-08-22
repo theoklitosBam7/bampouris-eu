@@ -14,13 +14,35 @@ const routeSegmentSchema = z.string().refine(isSafeRouteSegment, {
 });
 
 const sourceLinkSchema = z.object({
-  href: z.url(),
+  href: z
+    .url()
+    .refine(
+      (href) => ["http:", "https:"].includes(new URL(href).protocol),
+      "Learner-facing links must use HTTP or HTTPS.",
+    ),
   label: z.string(),
 });
 
+const sourceDocumentSchema = z
+  .string()
+  .min(1)
+  .refine((document) => {
+    const normalizedDocument = document.replaceAll("\\", "/");
+    const segments = normalizedDocument.split("/");
+
+    return (
+      !normalizedDocument.startsWith("/") &&
+      !/^[A-Za-z]:\//.test(normalizedDocument) &&
+      !segments.includes("..") &&
+      !segments.some((segment) =>
+        /^(?:notes(?:\.md)?|learning-records?)$/i.test(segment),
+      )
+    );
+  }, "Authoring source documents must be relative public-source paths, not private records or absolute paths.");
+
 const sourceTraceabilitySchema = z.object({
   course: z.string(),
-  document: z.string(),
+  document: sourceDocumentSchema,
   importedAt: z.coerce.date(),
 });
 
@@ -45,13 +67,13 @@ const lessonMetadataSchema = z.object({
   slug: routeSegmentSchema,
   objectives: z.array(z.string()).min(1),
   prerequisites: z.array(z.string()),
-  publicationDate: z.coerce.date().optional(),
-  sources: z.array(sourceLinkSchema).min(1),
+  publicationDate: z.coerce.date(),
+  learnerSources: z.array(sourceLinkSchema).min(1),
   authoringSource: sourceTraceabilitySchema,
   status: lessonStatusSchema,
   title: z.string(),
   topics: z.array(z.string()).min(1),
-  updatedDate: z.coerce.date().optional(),
+  updatedDate: z.coerce.date(),
 });
 
 const courseSchema = z.object({
@@ -69,7 +91,7 @@ const courseSchema = z.object({
   publicationDate: z.coerce.date(),
   slug: routeSegmentSchema,
   authoringSource: sourceTraceabilitySchema,
-  sources: z.array(sourceLinkSchema).min(1),
+  learnerSources: z.array(sourceLinkSchema).min(1),
   status: courseStatusSchema,
   title: z.string(),
   topics: z.array(z.string()).min(1),

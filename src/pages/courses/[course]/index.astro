@@ -336,8 +336,11 @@ const lessonTopics = [
                 )
               }
             </div>
-            <h2 id="sources-title">Course sources</h2>
-            <SourceList class="source-list" sources={data.sources} />
+            <h2 id="sources-title">Course citations</h2>
+            <SourceList
+              class="source-list"
+              learnerSources={data.learnerSources}
+            />
           </Card>
 
           <p class="ai-disclosure">

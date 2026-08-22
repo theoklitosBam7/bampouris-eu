@@ -7,7 +7,7 @@ description: A short, curated reading list for dependency injection, inversion o
 ---
 
 <p>
-    Start with the theory sources, then choose the TypeScript, frontend, or
+    Start with the theory material, then choose the TypeScript, frontend, or
     testing material that matches your question. The list is intentionally short
     and focused on the framework-free frontend scope of this course.
   </p>

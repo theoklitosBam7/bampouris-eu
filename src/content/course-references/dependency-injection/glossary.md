@@ -284,8 +284,8 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
     </div>
   </dl>
 
-  <section aria-labelledby="glossary-sources-title" class="source-section">
-    <h2 id="glossary-sources-title">Glossary sources</h2>
+  <section aria-labelledby="glossary-citations-title" class="source-section">
+    <h2 id="glossary-citations-title">Glossary citations</h2>
     <ul>
       <li>
         <a href="https://martinfowler.com/articles/injection.html">

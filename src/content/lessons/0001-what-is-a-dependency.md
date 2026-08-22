@@ -16,7 +16,7 @@ prerequisites:
   - You understand the role of browser APIs such as fetch.
 publicationDate: 2026-08-20
 updatedDate: 2026-08-20
-sources:
+learnerSources:
   - label: "Martin Fowler: Inversion of Control Containers and the Dependency Injection pattern"
     href: https://martinfowler.com/articles/injection.html
   - label: "Brett L. Schuchert: DIP in the Wild"
@@ -281,8 +281,8 @@ Try to answer these questions before opening the model answers:
 - [DIP in the Wild, Brett L. Schuchert](https://martinfowler.com/articles/dipInTheWild.html). It separates wiring, direction, and shape.
 - Review the [course glossary](../glossary/) and the [further reading](../resources/) before the next lesson.
 
-## Sources
+## Citations
 
-- Fowler, [Inversion of Control Containers and the Dependency Injection pattern](https://martinfowler.com/articles/injection.html). This source defines DI and constructor injection.
-- Schuchert, [DIP in the Wild](https://martinfowler.com/articles/dipInTheWild.html). This source explains the coupling and wiring framing.
-- SSENSE Tech, [DI vs Dependency Inversion vs IoC](https://medium.com/ssense-tech/dependency-injection-vs-dependency-inversion-vs-inversion-of-control-lets-set-the-record-straight-5dc818dc32d1). This is the primary TypeScript reading.
+- Fowler, [Inversion of Control Containers and the Dependency Injection pattern](https://martinfowler.com/articles/injection.html). This article explains DI and constructor injection.
+- Schuchert, [DIP in the Wild](https://martinfowler.com/articles/dipInTheWild.html). This article explains coupling and dependency wiring.
+- SSENSE Tech, [DI vs Dependency Inversion vs IoC](https://medium.com/ssense-tech/dependency-injection-vs-dependency-inversion-vs-inversion-of-control-lets-set-the-record-straight-5dc818dc32d1). This article compares DI, dependency inversion, and IoC in TypeScript.

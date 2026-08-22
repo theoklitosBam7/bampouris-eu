@@ -53,6 +53,19 @@ export const getOrderedLessonSummaries = (course: Course) =>
     (a, b) => a.lessonNumber - b.lessonNumber,
   );
 
+const assertLessonNumberMatches = (
+  courseSlug: string,
+  lessonSlug: string,
+  expectedLessonNumber: number,
+  actualLessonNumber: number,
+) => {
+  if (actualLessonNumber !== expectedLessonNumber) {
+    throw new Error(
+      `Course "${courseSlug}" lesson "${lessonSlug}" has lesson number ${expectedLessonNumber} in its sequence, but the lesson entry declares ${actualLessonNumber}.`,
+    );
+  }
+};
+
 export const resolvePublishedLesson = (
   identity: LessonIdentity,
   lessons: Lesson[],
@@ -87,11 +100,12 @@ export const getPublishedLessonsForCourse = (
         `Course "${course.data.slug}"`,
       );
 
-      if (lesson.data.lessonNumber !== summary.lessonNumber) {
-        throw new Error(
-          `Course "${course.data.slug}" lesson "${summary.slug}" has lesson number ${summary.lessonNumber} in its sequence, but the lesson entry declares ${lesson.data.lessonNumber}.`,
-        );
-      }
+      assertLessonNumberMatches(
+        course.data.slug,
+        summary.slug,
+        summary.lessonNumber,
+        lesson.data.lessonNumber,
+      );
 
       return lesson;
     });
@@ -118,6 +132,37 @@ export const getCourseReferenceCapabilities = (
     });
 
   return capabilities;
+};
+
+export const getCourseReferencePaths = ({
+  courses,
+  courseReferences,
+  kind,
+}: {
+  courses: Course[];
+  courseReferences: CourseReference[];
+  kind: CourseReferenceKind;
+}) => {
+  const coursesBySlug = new Map(
+    courses.map((course) => [course.data.slug, course]),
+  );
+
+  return courseReferences
+    .filter((reference) => reference.data.kind === kind)
+    .map((reference) => {
+      const course = coursesBySlug.get(reference.data.course);
+
+      if (!course) {
+        throw new Error(
+          `${kind} reference "${reference.id}" has no matching course.`,
+        );
+      }
+
+      return {
+        params: { course: course.data.slug },
+        props: { course, reference },
+      };
+    });
 };
 
 const assertSafeSegment = (context: string, value: string) => {
@@ -225,11 +270,12 @@ export const validateLessonCatalog = ({
           `Course "${course.data.slug}"`,
         );
 
-        if (lesson.data.lessonNumber !== summary.lessonNumber) {
-          throw new Error(
-            `Course "${course.data.slug}" lesson "${summary.slug}" has lesson number ${summary.lessonNumber} in its sequence, but the lesson entry declares ${lesson.data.lessonNumber}.`,
-          );
-        }
+        assertLessonNumberMatches(
+          course.data.slug,
+          summary.slug,
+          summary.lessonNumber,
+          lesson.data.lessonNumber,
+        );
       });
 
     courseLessons

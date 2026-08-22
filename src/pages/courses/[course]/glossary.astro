@@ -2,7 +2,10 @@
 import { type CollectionEntry, getCollection, render } from "astro:content";
 
 import LessonReferencePage from "@/layouts/LessonReferencePage.astro";
-import { validateLessonCatalog } from "@/utils/lessons";
+import {
+  getCourseReferencePaths,
+  validateLessonCatalog,
+} from "@/utils/lessons";
 
 type Course = CollectionEntry<"courses">;
 type CourseReference = CollectionEntry<"courseReferences">;
@@ -20,26 +23,11 @@ export async function getStaticPaths() {
   ]);
   validateLessonCatalog({ courseReferences, courses, lessons });
 
-  const coursesBySlug = new Map(
-    courses.map((course) => [course.data.slug, course]),
-  );
-
-  return courseReferences
-    .filter((reference) => reference.data.kind === "glossary")
-    .map((reference) => {
-      const course = coursesBySlug.get(reference.data.course);
-
-      if (!course) {
-        throw new Error(
-          `Glossary reference "${reference.id}" has no matching course.`,
-        );
-      }
-
-      return {
-        params: { course: course.data.slug },
-        props: { course, reference },
-      };
-    });
+  return getCourseReferencePaths({
+    courseReferences,
+    courses,
+    kind: "glossary",
+  });
 }
 
 const { course, reference } = Astro.props;
