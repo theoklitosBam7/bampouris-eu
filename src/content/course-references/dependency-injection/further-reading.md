@@ -58,7 +58,7 @@ description: A short, curated reading list for dependency injection, inversion o
       </li>
       <li>
         <a
-          href="https://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod"
+          href="http://www.butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod"
           rel="noopener noreferrer"
           target="_blank"
         >
@@ -74,7 +74,8 @@ description: A short, curated reading list for dependency injection, inversion o
         >
           Dependency Injection Principles, Practices, and Patterns, chapter 1,
           Seemann and van Deursen
-        </a>. It covers composition-root practice and Pure DI in a free sample.
+        </a>. It covers composition-root practice and Pure DI in a free sample,
+        and introduces DI myths and the Service Locator warning.
       </li>
     </ul>
   </section>
@@ -136,7 +137,8 @@ description: A short, curated reading list for dependency injection, inversion o
           target="_blank"
         >
           Hierarchical injectors, Angular documentation
-        </a>. It explains scoped provider resolution in Angular.
+        </a>. It explains scoped provider resolution in Angular, including
+        ElementInjector, EnvironmentInjector, and NullInjector.
       </li>
       <li>
         <a
@@ -145,8 +147,8 @@ description: A short, curated reading list for dependency injection, inversion o
           target="_blank"
         >
           Passing data deeply with Context, React documentation
-        </a>. It describes Context as a delivery channel and when simpler props
-        are enough.
+        </a>. It describes Context as a delivery channel, the
+        create/use/provide pattern, and when simpler props are enough.
       </li>
     </ul>
   </section>
@@ -161,8 +163,8 @@ description: A short, curated reading list for dependency injection, inversion o
           target="_blank"
         >
           Mocking, Vitest documentation
-        </a>. It covers spies, fakes, and mocks when a hand-written fake is not
-        enough.
+        </a>. It covers <code>vi.fn</code>, module mocks, spies, fakes, and
+        mocks when a hand-written fake is not enough.
       </li>
       <li>
         <a

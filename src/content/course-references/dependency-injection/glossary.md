@@ -80,10 +80,16 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
       <dd>
         The single place, as close as possible to the application entry point,
         where concrete dependencies are selected and objects are assembled. The
-        application logic does not choose its own collaborators.
+        application logic and libraries do not choose the concrete classes; the
+        entry point does.
         <p class="interview-line">
           "Dependencies are composed at the edge of the app, so the rest of the
           code does not need to construct them."
+          See
+          <a href="https://livebook.manning.com/book/dependency-injection-principles-practices-patterns/chapter-1/">
+            Seemann and van Deursen's chapter 1
+          </a>
+          for the composition-root practice.
         </p>
       </dd>
     </div>
@@ -97,8 +103,8 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
         Passing dependencies as constructor parameters. The dependency list is
         visible in the signature, and a half-built object is harder to create.
         <p class="interview-line">
-          "If it is on the constructor, the type system makes the requirement
-          visible."
+          "If it is on the constructor, the type system enforces it. You cannot
+          forget to provide it."
         </p>
       </dd>
     </div>
@@ -119,8 +125,9 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
       <dd>
         Something a module needs to do its job but does not control: another
         object or service, a function, <code>fetch</code>, the system clock, or
-        <code>localStorage</code>. If it can change or fail without the module's
-        logic changing, it is a dependency rather than an owned detail.
+        <code>localStorage</code>. If it can change, fail, or need replacing
+        without the module's logic changing, it is a dependency rather than an
+        owned detail.
         <p class="interview-line">
           "A dependency is anything the module needs but should not decide for
           itself."
@@ -152,7 +159,8 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
       <dd>
         A wiring technique in which objects receive dependencies from outside,
         through a constructor, setter, or parameter, instead of constructing or
-        fetching them. It needs no framework.
+        fetching them. It needs no framework. Martin Fowler named the pattern in
+        his 2004 article on dependency injection.
         <p class="interview-line">
           "DI means dependencies are supplied from outside, so behaviour can
           change without editing the class."
@@ -164,7 +172,12 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
       <dd>
         A lightweight working implementation used in tests. A fake transport can
         return canned values without making a network request. It lets the test
-        exercise the service logic rather than the infrastructure.
+        exercise the service logic rather than the infrastructure. Unlike a
+        mock, a fake usually focuses on providing working behaviour instead of
+        asserting how the dependency was used. See
+        <a href="https://kentcdodds.com/blog/stop-mocking-fetch">
+          Kent C. Dodds's discussion of fakes
+        </a>.
         <p class="interview-line">
           "I inject a fake so the test exercises my code, not the network."
         </p>
@@ -178,6 +191,9 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
         "Do not call us; we will call you." It is the slogan for inversion of
         control: your code registers or supplies behaviour, while another caller
         decides when to run it.
+        <p class="interview-line">
+          "A framework calls my code; my code does not drive the framework."
+        </p>
       </dd>
     </div>
     <div class="term-card" id="injection">
@@ -185,7 +201,12 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
       <dd>
         The act of handing a dependency to the code that needs it. Constructor,
         setter, property, and parameter injection are different delivery
-        choices; constructor injection is the default in this course.
+        choices. Passing a dependency through component props is parameter
+        injection; constructor injection is the default in this course.
+        <p class="interview-line">
+          "Injection is delivery. Where you deliver it is a design choice;
+          constructor is the default."
+        </p>
       </dd>
     </div>
     <div class="term-card" id="interface">
@@ -206,8 +227,8 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
       </dt>
       <dd>
         A broad principle in which control over program flow or object creation
-        moves from your code to an external framework or caller. Dependency
-        injection is one technique within IoC.
+        moves from your code to an external framework or caller. Frameworks are
+        its everyday example. Dependency injection is one technique within IoC.
         <p class="interview-line">
           "IoC asks who is driving. If it is not my code, control is inverted."
         </p>
@@ -221,8 +242,14 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
       </dt>
       <dd>
         A library that maps tokens to providers and constructs an object graph.
-        A container can automate a composition root, but it is never required
-        for dependency injection.
+        Examples include Angular's injector, tsyringe, and InversifyJS. A
+        container can automate a composition root, but it is never required for
+        dependency injection. Containers are outside the main line of this
+        course.
+        <p class="interview-line">
+          "A container automates the composition root; it does not change what
+          DI is."
+        </p>
       </dd>
     </div>
     <div class="term-card" id="service">
@@ -230,7 +257,11 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
       <dd>
         A reusable object dedicated to one responsibility, such as data access,
         logging, or notifications. A service is often the module that receives a
-        dependency.
+        dependency. In Angular, a service can be registered for injection. See
+        <a href="https://angular.dev/guide/di">the Angular documentation</a>.
+        <p class="interview-line">
+          "A service is a unit of behaviour other code depends on."
+        </p>
       </dd>
     </div>
     <div class="term-card" id="service-locator">
@@ -241,7 +272,8 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
       <dd>
         An object that code asks for dependencies at runtime, such as
         <code>locator.get(PaymentApi)</code>, instead of receiving them. It
-        hides dependencies from signatures and defers failures to runtime. See
+        hides dependencies from signatures, forces code to depend on the locator,
+        and defers failures to runtime. See
         <a href="https://martinfowler.com/articles/injection.html">
           Fowler's discussion of DI and Service Locator
         </a>
@@ -258,23 +290,36 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
       </dt>
       <dd>
         An umbrella term for something standing in for a dependency during a
-        test: a fake, stub, spy, or mock. The distinctions describe the role the
-        stand-in plays, not a different injection technique.
+        test: a fake provides working behaviour, a stub returns canned answers,
+        a spy records calls, and a mock asserts interactions. The distinctions
+        describe the role the stand-in plays, not a different injection
+        technique. See
+        <a href="https://vitest.dev/guide/mocking">Vitest's mocking guide</a>.
+        <p class="interview-line">
+          "Test doubles let tests swap injected dependencies without touching
+          production code."
+        </p>
       </dd>
     </div>
     <div class="term-card" id="token">
       <dt>Token <span class="term-hint">the key in the map</span></dt>
       <dd>
-        The key a container uses to look up a dependency. A token must exist at
+        The key a container uses to look up a dependency. In Angular, this may be
+        a type or a dedicated <code>InjectionToken</code>. A token must exist at
         runtime, which is why a plain TypeScript interface is not enough for a
         container lookup.
+        <p class="interview-line">
+          "A token is the lookup key. In TypeScript it must exist at runtime, so
+          a plain interface is not enough for a container."
+        </p>
       </dd>
     </div>
     <div class="term-card" id="wiring">
       <dt>Wiring <span class="term-hint">choosing the real ones</span></dt>
       <dd>
         Selecting concrete dependencies and connecting them to the objects that
-        need them. Wiring belongs at the composition root, not in the middle of
+        need them. Wiring belongs at the
+        <a href="#composition-root">composition root</a>, not in the middle of
         application logic.
         <p class="interview-line">
           "Wiring is where policy meets plumbing. It is the one place concrete
@@ -299,7 +344,7 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
         </a>. It explains IoC and the Hollywood Principle.
       </li>
       <li>
-        <a href="https://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod">
+        <a href="http://www.butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod">
           Robert C. Martin: The Principles of OOD
         </a>. It defines DIP.
       </li>
@@ -307,6 +352,17 @@ description: The working vocabulary for the Dependency Injection in TypeScript c
         <a href="https://martinfowler.com/articles/dipInTheWild.html">
           Brett L. Schuchert: DIP in the Wild
         </a>. It explains the wiring, direction, and shape framing.
+      </li>
+      <li>
+        <a href="https://livebook.manning.com/book/dependency-injection-principles-practices-patterns/chapter-1/">
+          Mark Seemann and Steven van Deursen: Dependency Injection Principles,
+          Practices, and Patterns, chapter 1
+        </a>. It covers composition roots and Pure DI.
+      </li>
+      <li>
+        <a href="https://kentcdodds.com/blog/stop-mocking-fetch">
+          Kent C. Dodds: Stop mocking fetch
+        </a>. It explains the use of hand-written fakes in browser tests.
       </li>
     </ul>
   </section>
