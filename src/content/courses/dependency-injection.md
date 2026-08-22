@@ -22,7 +22,7 @@ prerequisites:
 pilotScope:
   included:
     - Course overview, objectives, and prerequisites.
-    - The first lesson with its glossary and curated resources.
+    - The first lesson with its glossary and further reading.
     - Planned six-lesson sequence with publication status for each lesson.
   excluded:
     - The remaining five lesson pages and course completion tracking.
@@ -109,4 +109,4 @@ plannedLessons:
 
 This short, self-study course is for software engineers who want to explain and apply dependency injection in TypeScript frontend code. It starts with a small example, then moves to abstractions, control flow, and application wiring.
 
-The public pilot includes the course overview, the first lesson, the glossary, and curated resources. The cards below show the planned course order; only published lesson cards open a public lesson page.
+The public pilot includes the course overview, the first lesson, the glossary, and further reading. The cards below show the planned course order; only published lesson cards open a public lesson page.

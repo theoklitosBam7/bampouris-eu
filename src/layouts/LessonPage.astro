@@ -9,7 +9,14 @@ import SourceList from "@/components/lessons/SourceList.astro";
 import RelatedLinks from "@/components/RelatedLinks.astro";
 import Tag from "@/components/ui/Tag.astro";
 import { LESSON_FEEDBACK_URL } from "@/consts";
-import { formatDuration, formatStatus, getLessonPath } from "@/utils/lessons";
+import {
+  type CourseReferenceCapabilities,
+  formatDuration,
+  formatStatus,
+  getCoursePath,
+  getCourseReferencePath,
+  getLessonPath,
+} from "@/utils/lessons";
 
 type Lesson = CollectionEntry<"lessons">;
 
@@ -18,10 +25,18 @@ type Props = {
   lesson: Lesson;
   next?: Lesson;
   previous?: Lesson;
+  referenceCapabilities: CourseReferenceCapabilities;
   relatedBlogPosts: CollectionEntry<"blog">[];
 };
 
-const { course, lesson, next, previous, relatedBlogPosts } = Astro.props;
+const {
+  course,
+  lesson,
+  next,
+  previous,
+  referenceCapabilities,
+  relatedBlogPosts,
+} = Astro.props;
 const { data } = lesson;
 const relatedBlogItems = relatedBlogPosts.map((post) => ({
   description: post.data.description,
@@ -197,12 +212,25 @@ const relatedBlogItems = relatedBlogPosts.map((post) => ({
       >
         <div class="container-narrow">
           <div class="lesson-reference-links">
-            <a href={`/courses/${course.data.slug}/glossary/`}
-              >Open the course glossary</a
-            >
-            <a href={`/courses/${course.data.slug}/resources/`}
-              >Browse curated resources</a
-            >
+            {
+              referenceCapabilities.glossary && (
+                <a href={getCourseReferencePath(course.data.slug, "glossary")}>
+                  Open the course glossary
+                </a>
+              )
+            }
+            {
+              referenceCapabilities["further-reading"] && (
+                <a
+                  href={getCourseReferencePath(
+                    course.data.slug,
+                    "further-reading",
+                  )}
+                >
+                  Browse further reading
+                </a>
+              )
+            }
           </div>
 
           <div class="lesson-sources">
@@ -246,7 +274,7 @@ const relatedBlogItems = relatedBlogPosts.map((post) => ({
             ) : (
               <a
                 class="lesson-navigation-link lesson-navigation-course"
-                href={`/courses/${course.data.slug}/`}
+                href={getCoursePath(course.data.slug)}
               >
                 <span>Course overview</span>
                 <strong>{course.data.title}</strong>
@@ -271,11 +299,11 @@ const relatedBlogItems = relatedBlogPosts.map((post) => ({
     <Footer />
 
     <script>
-      import { initializeDependencyInjectionDemo } from "@/scripts/lessons/demos/dependency-injection";
+      import { initializeLessonDemos } from "@/scripts/lessons/demos";
       import { initializeLessonInteractions } from "@/scripts/lessons/interactions";
 
       initializeLessonInteractions();
-      initializeDependencyInjectionDemo();
+      initializeLessonDemos();
     </script>
   </body>
 </html>

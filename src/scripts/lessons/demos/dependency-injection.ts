@@ -5,6 +5,7 @@ const fakePrices: Record<string, number> = {
   "p-042": 1290,
 };
 let demoCounter = 0;
+const initializedDemoRoots = new WeakSet<HTMLElement>();
 
 class PriceService {
   constructor(private readonly fetchPrice: PriceTransport) {}
@@ -28,12 +29,16 @@ const getErrorMessage = (error: unknown) => {
   return String(error);
 };
 
-const initializeDependencyInjectionDemoForPage = (page: HTMLElement) => {
-  page
+export const initializeDependencyInjectionDemo = (lessonRoot: HTMLElement) => {
+  lessonRoot
     .querySelectorAll<HTMLElement>(
       '[data-lesson-demo][data-demo-kind="dependency-injection"]',
     )
     .forEach((root) => {
+      if (initializedDemoRoots.has(root)) {
+        return;
+      }
+
       const output = root.querySelector<HTMLElement>("[data-demo-output]");
       const buttons = Array.from(
         root.querySelectorAll<HTMLButtonElement>("[data-demo-action]"),
@@ -42,6 +47,8 @@ const initializeDependencyInjectionDemoForPage = (page: HTMLElement) => {
       if (!output || buttons.length === 0) {
         return;
       }
+
+      initializedDemoRoots.add(root);
 
       const networkButton = root.querySelector<HTMLButtonElement>(
         '[data-demo-action="network"]',
@@ -106,10 +113,4 @@ const initializeDependencyInjectionDemoForPage = (page: HTMLElement) => {
         });
       });
     });
-};
-
-export const initializeDependencyInjectionDemo = () => {
-  document
-    .querySelectorAll<HTMLElement>("[data-lesson-page]")
-    .forEach(initializeDependencyInjectionDemoForPage);
 };

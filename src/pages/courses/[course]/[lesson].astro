@@ -2,10 +2,15 @@
 import { type CollectionEntry, getCollection, render } from "astro:content";
 
 import LessonPage from "@/layouts/LessonPage.astro";
-import { getPublishedLessonsForCourse } from "@/utils/lessons";
+import {
+  getCourseReferenceCapabilities,
+  getPublishedLessonsForCourse,
+  validateLessonCatalog,
+} from "@/utils/lessons";
 
 type BlogPost = CollectionEntry<"blog">;
 type Course = CollectionEntry<"courses">;
+type CourseReference = CollectionEntry<"courseReferences">;
 type Lesson = CollectionEntry<"lessons">;
 
 type Props = {
@@ -13,18 +18,28 @@ type Props = {
   lesson: Lesson;
   next?: Lesson;
   previous?: Lesson;
+  referenceCapabilities: {
+    "further-reading"?: CourseReference;
+    glossary?: CourseReference;
+  };
   relatedBlogPosts: BlogPost[];
 };
 
 export async function getStaticPaths() {
-  const [courses, lessons, blogPosts] = await Promise.all([
+  const [courses, lessons, blogPosts, courseReferences] = await Promise.all([
     getCollection("courses"),
     getCollection("lessons"),
     getCollection("blog"),
+    getCollection("courseReferences"),
   ]);
+  validateLessonCatalog({ courseReferences, courses, lessons });
 
   return courses.flatMap((course) => {
     const publishedLessons = getPublishedLessonsForCourse(course, lessons);
+    const referenceCapabilities = getCourseReferenceCapabilities(
+      course.data.slug,
+      courseReferences,
+    );
 
     return publishedLessons.map((lesson, currentIndex) => ({
       params: {
@@ -36,15 +51,27 @@ export async function getStaticPaths() {
         lesson,
         next: publishedLessons[currentIndex + 1],
         previous: publishedLessons[currentIndex - 1],
+        referenceCapabilities,
         relatedBlogPosts: blogPosts.filter((post) =>
-          post.data.relatedLessons?.includes(lesson.data.slug),
+          post.data.relatedLessons?.some(
+            (relatedLesson) =>
+              relatedLesson.course === lesson.data.course &&
+              relatedLesson.slug === lesson.data.slug,
+          ),
         ),
       },
     }));
   });
 }
 
-const { course, lesson, next, previous, relatedBlogPosts } = Astro.props;
+const {
+  course,
+  lesson,
+  next,
+  previous,
+  referenceCapabilities,
+  relatedBlogPosts,
+} = Astro.props;
 const { Content } = await render(lesson);
 ---
 
@@ -53,6 +80,7 @@ const { Content } = await render(lesson);
   lesson={lesson}
   next={next}
   previous={previous}
+  referenceCapabilities={referenceCapabilities}
   relatedBlogPosts={relatedBlogPosts}
 >
   <Content />

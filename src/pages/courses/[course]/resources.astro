@@ -1,212 +1,56 @@
 ---
-import { type CollectionEntry, getCollection } from "astro:content";
+import { type CollectionEntry, getCollection, render } from "astro:content";
 
 import LessonReferencePage from "@/layouts/LessonReferencePage.astro";
+import { validateLessonCatalog } from "@/utils/lessons";
 
 type Course = CollectionEntry<"courses">;
+type CourseReference = CollectionEntry<"courseReferences">;
 
 type Props = {
   course: Course;
+  reference: CourseReference;
 };
 
 export async function getStaticPaths() {
-  const courses = await getCollection("courses");
+  const [courses, lessons, courseReferences] = await Promise.all([
+    getCollection("courses"),
+    getCollection("lessons"),
+    getCollection("courseReferences"),
+  ]);
+  validateLessonCatalog({ courseReferences, courses, lessons });
 
-  return courses
-    .filter((course) => course.data.slug === "dependency-injection")
-    .map((course) => ({
-      params: { course: course.data.slug },
-      props: { course },
-    }));
+  const coursesBySlug = new Map(
+    courses.map((course) => [course.data.slug, course]),
+  );
+
+  return courseReferences
+    .filter((reference) => reference.data.kind === "further-reading")
+    .map((reference) => {
+      const course = coursesBySlug.get(reference.data.course);
+
+      if (!course) {
+        throw new Error(
+          `Further-reading reference "${reference.id}" has no matching course.`,
+        );
+      }
+
+      return {
+        params: { course: course.data.slug },
+        props: { course, reference },
+      };
+    });
 }
 
-const { course } = Astro.props;
+const { course, reference } = Astro.props;
+const { Content } = await render(reference);
 ---
 
 <LessonReferencePage
   course={course}
-  description="A short, curated reading list for dependency injection, inversion of control, dependency inversion, TypeScript, frontend architecture, and test doubles."
-  eyebrow="Reference · further reading"
-  title="Curated Dependency Injection resources"
+  description={reference.data.description}
+  eyebrow={reference.data.eyebrow}
+  title={reference.data.title}
 >
-  <p>
-    Start with the theory sources, then choose the TypeScript, frontend, or
-    testing material that matches your question. The list is intentionally short
-    and focused on the framework-free frontend scope of this course.
-  </p>
-
-  <p class="reference-note">
-    The first lesson's recommended path is the
-    <a
-      href="https://medium.com/ssense-tech/dependency-injection-vs-dependency-inversion-vs-inversion-of-control-lets-set-the-record-straight-5dc818dc32d1"
-    >
-      SSENSE Tech TypeScript refactor
-    </a>
-    followed by Fowler's explanations of DI and IoC. Return to the
-    <a href={`/courses/${course.data.slug}/glossary/`}>course glossary</a>
-    when the terms begin to overlap.
-  </p>
-
-  <section aria-labelledby="theory-title">
-    <h2 id="theory-title">Theory</h2>
-    <ul>
-      <li>
-        <a
-          href="https://martinfowler.com/articles/injection.html"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Inversion of Control Containers and the Dependency Injection pattern,
-          Martin Fowler
-        </a>. This article named DI. It covers constructor and setter injection,
-        DI versus Service Locator, and separating configuration from use.
-      </li>
-      <li>
-        <a
-          href="https://martinfowler.com/bliki/InversionOfControl.html"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          InversionOfControl, Martin Fowler
-        </a>. This short article explains the "Hollywood Principle" and IoC.
-      </li>
-      <li>
-        <a
-          href="https://martinfowler.com/articles/dipInTheWild.html"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          DIP in the Wild, Brett L. Schuchert
-        </a>. It separates DI, IoC, and DIP as wiring, direction, and shape.
-      </li>
-      <li>
-        <a
-          href="https://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          The Principles of OOD, Robert C. Martin
-        </a>. This is the source of the "depend on abstractions, not
-        concretions" wording.
-      </li>
-      <li>
-        <a
-          href="https://livebook.manning.com/book/dependency-injection-principles-practices-patterns/chapter-1/"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Dependency Injection Principles, Practices, and Patterns, chapter 1,
-          Seemann and van Deursen
-        </a>. It covers composition-root practice and Pure DI in a free sample.
-      </li>
-    </ul>
-  </section>
-
-  <section aria-labelledby="typescript-title">
-    <h2 id="typescript-title">TypeScript</h2>
-    <ul>
-      <li>
-        <a
-          href="https://github.com/arista/typescriptDependencyInjection/blob/master/ManualDependencyInjection.md"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          TypeScript Patterns for Manual Dependency Injection, Arista
-        </a>. It covers framework-free constructor injection, contracts,
-        hand-written wiring, and test substitution.
-      </li>
-      <li>
-        <a
-          href="https://medium.com/ssense-tech/dependency-injection-vs-dependency-inversion-vs-inversion-of-control-lets-set-the-record-straight-5dc818dc32d1"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Dependency Injection vs Dependency Inversion vs Inversion of Control,
-          SSENSE Tech
-        </a>. It walks through a TypeScript refactor from coupling to injection
-        and DIP.
-      </li>
-    </ul>
-  </section>
-
-  <section aria-labelledby="frontend-title">
-    <h2 id="frontend-title">Frontend frameworks</h2>
-    <ul>
-      <li>
-        <a
-          href="https://angular.dev/guide/di"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Dependency injection in Angular, Angular documentation
-        </a>. This shows services, injection contexts, and test doubles in a
-        framework.
-      </li>
-      <li>
-        <a
-          href="https://angular.dev/guide/di/defining-dependency-providers"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Defining dependency providers, Angular documentation
-        </a>. It lists provider levels and <code>useClass</code>,
-        <code>useValue</code>, and <code>useFactory</code>.
-      </li>
-      <li>
-        <a
-          href="https://angular.dev/guide/di/hierarchical-dependency-injection"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Hierarchical injectors, Angular documentation
-        </a>. It explains scoped provider resolution in Angular.
-      </li>
-      <li>
-        <a
-          href="https://react.dev/learn/passing-data-deeply-with-context"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Passing data deeply with Context, React documentation
-        </a>. It describes Context as a delivery channel and when simpler props
-        are enough.
-      </li>
-    </ul>
-  </section>
-
-  <section aria-labelledby="testing-title">
-    <h2 id="testing-title">Testing</h2>
-    <ul>
-      <li>
-        <a
-          href="https://vitest.dev/guide/mocking"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Mocking, Vitest documentation
-        </a>. It covers spies, fakes, and mocks when a hand-written fake is not
-        enough.
-      </li>
-      <li>
-        <a
-          href="https://kentcdodds.com/blog/stop-mocking-fetch"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          Stop mocking fetch, Kent C. Dodds
-        </a>. It explains why a small fake can keep a browser test focused on
-        application logic.
-      </li>
-    </ul>
-  </section>
-
-  <section aria-labelledby="resources-scope-title" class="source-section">
-    <h2 id="resources-scope-title">How to use this list</h2>
-    <p>
-      Read the lesson first, then use the glossary to check vocabulary. The
-      resources are further study, not prerequisites for opening the next
-      lesson. This public page contains curated learner-facing links only; it
-      does not publish private authoring notes or learning records.
-    </p>
-  </section>
+  <Content />
 </LessonReferencePage>

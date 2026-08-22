@@ -13,8 +13,12 @@ import Tag from "@/components/ui/Tag.astro";
 import {
   formatDuration,
   formatStatus,
+  getCourseReferenceCapabilities,
+  getCourseReferencePath,
   getLessonPath,
+  getOrderedLessonSummaries,
   getPublishedLessonsForCourse,
+  validateLessonCatalog,
 } from "@/utils/lessons";
 
 type Props = {
@@ -22,7 +26,12 @@ type Props = {
 };
 
 export async function getStaticPaths() {
-  const courses = await getCollection("courses");
+  const [courses, lessons, courseReferences] = await Promise.all([
+    getCollection("courses"),
+    getCollection("lessons"),
+    getCollection("courseReferences"),
+  ]);
+  validateLessonCatalog({ courseReferences, courses, lessons });
 
   return courses.map((course) => ({
     params: { course: course.data.slug },
@@ -33,17 +42,21 @@ export async function getStaticPaths() {
 const { course } = Astro.props;
 const { Content } = await render(course);
 const { data } = course;
-const lessons = await getCollection("lessons");
+const [lessons, courseReferences] = await Promise.all([
+  getCollection("lessons"),
+  getCollection("courseReferences"),
+]);
 const publishedLessonsBySlug = new Map(
   getPublishedLessonsForCourse(course, lessons).map((lesson) => [
     lesson.data.slug,
     lesson,
   ]),
 );
-
-const orderedLessons = [...data.plannedLessons].sort(
-  (a, b) => a.lessonNumber - b.lessonNumber,
+const referenceCapabilities = getCourseReferenceCapabilities(
+  data.slug,
+  courseReferences,
 );
+const orderedLessons = getOrderedLessonSummaries(course);
 const lessonTopics = [
   ...new Set(orderedLessons.flatMap((lesson) => lesson.topics)),
 ].sort();
@@ -306,12 +319,24 @@ const lessonTopics = [
         <div class="container-wide">
           <Card class="details-card" hover="none" padding="lg">
             <div aria-label="Course references" class="course-reference-links">
-              <a href={`/courses/${data.slug}/glossary/`}>Course glossary</a>
-              <a href={`/courses/${data.slug}/resources/`}>
-                Curated resources
-              </a>
+              {
+                referenceCapabilities.glossary && (
+                  <a href={getCourseReferencePath(data.slug, "glossary")}>
+                    Course glossary
+                  </a>
+                )
+              }
+              {
+                referenceCapabilities["further-reading"] && (
+                  <a
+                    href={getCourseReferencePath(data.slug, "further-reading")}
+                  >
+                    Further reading
+                  </a>
+                )
+              }
             </div>
-            <h2 id="sources-title">Further reading</h2>
+            <h2 id="sources-title">Course sources</h2>
             <SourceList class="source-list" sources={data.sources} />
           </Card>
 

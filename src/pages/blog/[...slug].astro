@@ -2,6 +2,10 @@
 import { type CollectionEntry, getCollection, render } from "astro:content";
 
 import BlogPost from "@/layouts/BlogPost.astro";
+import {
+  resolveBlogRelatedLessons,
+  validateLessonCatalog,
+} from "@/utils/lessons";
 
 type Lesson = CollectionEntry<"lessons">;
 type Props = {
@@ -10,26 +14,21 @@ type Props = {
 };
 
 export async function getStaticPaths() {
-  const [posts, lessons] = await Promise.all([
+  const [posts, lessons, courses, courseReferences] = await Promise.all([
     getCollection("blog"),
     getCollection("lessons"),
+    getCollection("courses"),
+    getCollection("courseReferences"),
   ]);
-  const lessonsBySlug = new Map(
-    lessons.map((lesson) => [lesson.data.slug, lesson]),
-  );
+  validateLessonCatalog({ courseReferences, courses, lessons });
 
-  return posts.map((post) => {
-    const relatedLessons = (post.data.relatedLessons ?? [])
-      .map((lessonSlug) => lessonsBySlug.get(lessonSlug))
-      .filter(
-        (lesson): lesson is Lesson => lesson?.data.status === "published",
-      );
-
-    return {
-      params: { slug: post.id },
-      props: { post, relatedLessons },
-    };
-  });
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: {
+      post,
+      relatedLessons: resolveBlogRelatedLessons(post, lessons),
+    },
+  }));
 }
 
 const { post, relatedLessons } = Astro.props;

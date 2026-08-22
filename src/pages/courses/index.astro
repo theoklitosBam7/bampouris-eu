@@ -11,15 +11,20 @@ import Tag from "@/components/ui/Tag.astro";
 import {
   formatDuration,
   formatStatus,
+  getCoursePath,
   getLessonPath,
   getPublishedLessonsForCourse,
+  validateLessonCatalog,
 } from "@/utils/lessons";
 
-const [courses, lessons] = await Promise.all([
+const [courses, lessons, courseReferences] = await Promise.all([
   getCollection("courses"),
   getCollection("lessons"),
+  getCollection("courseReferences"),
 ]);
-const sortedCourses = courses.sort((a, b) =>
+validateLessonCatalog({ courseReferences, courses, lessons });
+
+const sortedCourses = [...courses].sort((a, b) =>
   a.data.title.localeCompare(b.data.title),
 );
 const courseBySlug = new Map(
@@ -78,7 +83,7 @@ const lessonTopics = [
                 <Card
                   class="course-card"
                   hover="lift"
-                  href={`/courses/${course.data.slug}/`}
+                  href={getCoursePath(course.data.slug)}
                   padding="lg"
                 >
                   <div class="course-card-header">
@@ -97,7 +102,7 @@ const lessonTopics = [
 
                   <dl class="course-card-meta">
                     <div>
-                      <dt>Level</dt>
+                      <dt>Difficulty</dt>
                       <dd>{course.data.difficulty}</dd>
                     </div>
                     <div>
