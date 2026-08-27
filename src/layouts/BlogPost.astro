@@ -7,12 +7,31 @@ import BaseHead from "@/components/BaseHead.astro";
 import Footer from "@/components/Footer.astro";
 import FormattedDate from "@/components/FormattedDate.astro";
 import Header from "@/components/Header.astro";
+import RelatedLinks from "@/components/RelatedLinks.astro";
 import Tag from "@/components/ui/Tag.astro";
+import { getLessonPath } from "@/utils/lessons";
 
-type Props = { tags?: string[] } & CollectionEntry<"blog">["data"];
+type Lesson = CollectionEntry<"lessons">;
+type Props = {
+  relatedLessons?: Lesson[];
+  tags?: string[];
+} & Omit<CollectionEntry<"blog">["data"], "relatedLessons" | "tags">;
 
-const { description, heroImage, pubDate, tags, title, updatedDate } =
-  Astro.props;
+const {
+  description,
+  heroImage,
+  pubDate,
+  relatedLessons = [],
+  tags,
+  title,
+  updatedDate,
+} = Astro.props;
+const relatedLearningItems = relatedLessons.map((lesson) => ({
+  description: lesson.data.description,
+  href: getLessonPath(lesson.data.course, lesson.data.slug),
+  kind: "Learning lesson",
+  title: lesson.data.title,
+}));
 const socialImage = heroImage
   ? (await getImage({ src: heroImage })).src
   : new URL("/blog-placeholder-1.jpg", Astro.url).toString();
@@ -144,6 +163,13 @@ const currentUrl = Astro.url.toString();
           </div>
         </div>
       </article>
+
+      <RelatedLinks
+        heading="Continue with a structured lesson"
+        headingId="related-learning-title"
+        items={relatedLearningItems}
+        label="Related learning"
+      />
 
       <!-- Article Footer -->
       <footer class="article-footer">

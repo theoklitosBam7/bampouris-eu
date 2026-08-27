@@ -1,0 +1,44 @@
+---
+import { type CollectionEntry, getCollection, render } from "astro:content";
+
+import LessonReferencePage from "@/layouts/LessonReferencePage.astro";
+import {
+  getCourseReferencePaths,
+  validateLessonCatalog,
+} from "@/utils/lessons";
+
+type Course = CollectionEntry<"courses">;
+type CourseReference = CollectionEntry<"courseReferences">;
+
+type Props = {
+  course: Course;
+  reference: CourseReference;
+};
+
+export async function getStaticPaths() {
+  const [courses, lessons, courseReferences] = await Promise.all([
+    getCollection("courses"),
+    getCollection("lessons"),
+    getCollection("courseReferences"),
+  ]);
+  validateLessonCatalog({ courseReferences, courses, lessons });
+
+  return getCourseReferencePaths({
+    courseReferences,
+    courses,
+    kind: "glossary",
+  });
+}
+
+const { course, reference } = Astro.props;
+const { Content } = await render(reference);
+---
+
+<LessonReferencePage
+  course={course}
+  description={reference.data.description}
+  eyebrow={reference.data.eyebrow}
+  title={reference.data.title}
+>
+  <Content />
+</LessonReferencePage>

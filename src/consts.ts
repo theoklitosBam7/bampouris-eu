@@ -3,3 +3,5 @@
 
 export const SITE_TITLE = "Theoklitos's Blog";
 export const SITE_DESCRIPTION = "Welcome to my website!";
+export const LESSON_FEEDBACK_URL =
+  "https://github.com/theoklitosBam7/bampouris-eu/issues";

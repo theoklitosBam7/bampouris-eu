@@ -1,0 +1,190 @@
+---
+interface Props {
+  indexId: string;
+  topics: string[];
+}
+
+const { indexId, topics } = Astro.props;
+const difficulties = ["Beginner", "Intermediate", "Advanced"];
+---
+
+<div class="lesson-filters" data-lesson-filters data-target={indexId}>
+  <div class="lesson-filter-fields">
+    <div class="lesson-filter-field">
+      <label for={`${indexId}-difficulty`}>Difficulty</label>
+      <select data-lesson-filter="difficulty" id={`${indexId}-difficulty`}>
+        <option value="">All difficulties</option>
+        {
+          difficulties.map((difficulty) => (
+            <option value={difficulty}>{difficulty}</option>
+          ))
+        }
+      </select>
+    </div>
+
+    <div class="lesson-filter-field">
+      <label for={`${indexId}-topic`}>Topic</label>
+      <select data-lesson-filter="topic" id={`${indexId}-topic`}>
+        <option value="">All topics</option>
+        {topics.map((topic) => <option value={topic}>{topic}</option>)}
+      </select>
+    </div>
+
+    <button data-lesson-filter-reset type="button">Clear filters</button>
+  </div>
+
+  <p aria-live="polite" class="lesson-filter-count" data-lesson-filter-count>
+  </p>
+</div>
+
+<script>
+  const filterRoots = document.querySelectorAll<HTMLElement>(
+    "[data-lesson-filters]",
+  );
+
+  filterRoots.forEach((root) => {
+    const index = document.getElementById(root.dataset.target || "");
+    const difficulty = root.querySelector<HTMLSelectElement>(
+      '[data-lesson-filter="difficulty"]',
+    );
+    const topic = root.querySelector<HTMLSelectElement>(
+      '[data-lesson-filter="topic"]',
+    );
+    const reset = root.querySelector<HTMLButtonElement>(
+      "[data-lesson-filter-reset]",
+    );
+    const count = root.querySelector<HTMLElement>("[data-lesson-filter-count]");
+
+    if (!index || !difficulty || !topic || !reset || !count) {
+      return;
+    }
+
+    const items = Array.from(
+      index.querySelectorAll<HTMLElement>("[data-lesson-item]"),
+    );
+
+    const applyFilters = () => {
+      const selectedDifficulty = difficulty.value;
+      const selectedTopic = topic.value;
+      let visibleCount = 0;
+
+      items.forEach((item) => {
+        const topics = (item.dataset.topics || "").split(",");
+        const matchesDifficulty =
+          !selectedDifficulty || item.dataset.difficulty === selectedDifficulty;
+        const matchesTopic = !selectedTopic || topics.includes(selectedTopic);
+        const isVisible = matchesDifficulty && matchesTopic;
+
+        item.hidden = !isVisible;
+        if (isVisible) {
+          visibleCount += 1;
+        }
+      });
+
+      count.textContent = `${visibleCount} ${visibleCount === 1 ? "lesson" : "lessons"} shown`;
+    };
+
+    difficulty.addEventListener("change", applyFilters);
+    topic.addEventListener("change", applyFilters);
+    reset.addEventListener("click", () => {
+      difficulty.value = "";
+      topic.value = "";
+      applyFilters();
+    });
+
+    applyFilters();
+  });
+</script>
+
+<style>
+  .lesson-filters {
+    display: grid;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+    padding: var(--space-5);
+    border: 1px solid var(--color-bg-secondary);
+    border-radius: var(--radius-xl);
+    background: var(--color-bg-primary);
+  }
+
+  .lesson-filter-fields {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: var(--space-4);
+  }
+
+  .lesson-filter-field {
+    display: grid;
+    flex: 1 1 12rem;
+    gap: var(--space-2);
+  }
+
+  .lesson-filter-field label {
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .lesson-filter-field select,
+  .lesson-filters button {
+    min-height: 2.75rem;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-bg-tertiary);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+  }
+
+  .lesson-filter-field select:focus-visible,
+  .lesson-filters button:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  .lesson-filters button {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .lesson-filters button:hover {
+    background: var(--color-accent);
+    color: white;
+  }
+
+  .lesson-filter-count {
+    margin: 0;
+    color: var(--color-text-tertiary);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  :global([data-lesson-item][hidden]) {
+    display: none !important;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .lesson-filters {
+      border-color: rgba(255, 255, 255, 0.08);
+      background: var(--color-bg-secondary);
+    }
+
+    .lesson-filter-field select,
+    .lesson-filters button {
+      border-color: var(--color-bg-tertiary);
+      background: var(--color-bg-secondary);
+    }
+  }
+
+  @media print {
+    .lesson-filters {
+      display: none;
+    }
+  }
+</style>

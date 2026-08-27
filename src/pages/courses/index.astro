@@ -1,0 +1,555 @@
+---
+import { getCollection } from "astro:content";
+
+import BaseHead from "@/components/BaseHead.astro";
+import Footer from "@/components/Footer.astro";
+import Header from "@/components/Header.astro";
+import LessonFilters from "@/components/lessons/LessonFilters.astro";
+import Button from "@/components/ui/Button.astro";
+import Card from "@/components/ui/Card.astro";
+import Tag from "@/components/ui/Tag.astro";
+import {
+  formatDuration,
+  formatStatus,
+  getCoursePath,
+  getLessonPath,
+  getPublishedLessonsForCourse,
+  validateLessonCatalog,
+} from "@/utils/lessons";
+
+const [courses, lessons, courseReferences] = await Promise.all([
+  getCollection("courses"),
+  getCollection("lessons"),
+  getCollection("courseReferences"),
+]);
+validateLessonCatalog({ courseReferences, courses, lessons });
+
+const sortedCourses = [...courses].sort((a, b) =>
+  a.data.title.localeCompare(b.data.title),
+);
+const courseBySlug = new Map(
+  sortedCourses.map((course) => [course.data.slug, course]),
+);
+const publishedLessons = sortedCourses.flatMap((course) =>
+  getPublishedLessonsForCourse(course, lessons),
+);
+const lessonTopics = [
+  ...new Set(publishedLessons.flatMap((lesson) => lesson.data.topics)),
+].sort();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      description="Courses on TypeScript and frontend engineering for software engineers."
+      title="Learning library | Theoklitos Bampouris"
+    />
+  </head>
+  <body class="grain-overlay">
+    <Header />
+
+    <main class="lessons-main">
+      <section class="lessons-hero">
+        <div class="container-narrow">
+          <span class="lessons-label">Learning library</span>
+          <h1 class="lessons-title">Courses for working engineers</h1>
+          <p class="lessons-description">
+            Courses explain the concepts behind frontend tools with examples.
+            Take each course's lessons in order, one at a time.
+          </p>
+          <Button href="#courses" size="lg" variant="primary">
+            Browse courses
+          </Button>
+        </div>
+      </section>
+
+      <section
+        aria-labelledby="courses-title"
+        class="courses-section"
+        id="courses"
+      >
+        <div class="container-wide">
+          <div class="section-heading">
+            <div>
+              <span class="section-label">Courses</span>
+              <h2 id="courses-title">Choose a course</h2>
+            </div>
+          </div>
+
+          <div class="course-grid">
+            {
+              sortedCourses.map((course) => (
+                <Card
+                  class="course-card"
+                  hover="lift"
+                  href={getCoursePath(course.data.slug)}
+                  padding="lg"
+                >
+                  <div class="course-card-header">
+                    <Tag size="sm" variant="accent">
+                      {formatStatus(course.data.status)}
+                    </Tag>
+                    <span class="course-card-count">
+                      {course.data.plannedLessons.length} lessons
+                    </span>
+                  </div>
+
+                  <h3 class="course-card-title">{course.data.title}</h3>
+                  <p class="course-card-description">
+                    {course.data.description}
+                  </p>
+
+                  <dl class="course-card-meta">
+                    <div>
+                      <dt>Difficulty</dt>
+                      <dd>{course.data.difficulty}</dd>
+                    </div>
+                    <div>
+                      <dt>Duration</dt>
+                      <dd>{formatDuration(course.data.durationMinutes)}</dd>
+                    </div>
+                  </dl>
+
+                  <div class="course-card-topics">
+                    {course.data.topics.map((topic) => (
+                      <Tag size="sm" variant="outline">
+                        {topic}
+                      </Tag>
+                    ))}
+                  </div>
+
+                  <span class="course-card-link">
+                    View course
+                    <svg
+                      aria-hidden="true"
+                      fill="none"
+                      height="16"
+                      stroke="currentColor"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                      width="16"
+                    >
+                      <path d="M5 12h14" />
+                      <path d="m12 5 7 7-7 7" />
+                    </svg>
+                  </span>
+                </Card>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <section
+        aria-labelledby="published-lessons-title"
+        class="published-lessons-section"
+        id="published-lessons"
+      >
+        <div class="container-wide">
+          <div class="section-heading">
+            <div>
+              <span class="section-label">Published lessons</span>
+              <h2 id="published-lessons-title">Start with a focused lesson</h2>
+            </div>
+            <p>
+              Filter published lessons by difficulty or topic, then open a
+              stable lesson page directly.
+            </p>
+          </div>
+
+          <LessonFilters
+            indexId="publishedLessonsIndex"
+            topics={lessonTopics}
+          />
+
+          <div class="published-lesson-grid" id="publishedLessonsIndex">
+            {
+              publishedLessons.map((lesson) => {
+                const course = courseBySlug.get(lesson.data.course);
+
+                return course ? (
+                  <article
+                    data-difficulty={lesson.data.difficulty}
+                    data-lesson-item
+                    data-topics={lesson.data.topics.join(",")}
+                  >
+                    <Card
+                      class="published-lesson-card"
+                      hover="lift"
+                      href={getLessonPath(course.data.slug, lesson.data.slug)}
+                      padding="lg"
+                    >
+                      <div class="published-lesson-kicker">
+                        <span>{course.data.title}</span>
+                        <Tag size="sm" variant="accent">
+                          {formatStatus(lesson.data.status)}
+                        </Tag>
+                      </div>
+                      <h3>{lesson.data.title}</h3>
+                      <p>{lesson.data.description}</p>
+                      <div class="published-lesson-meta">
+                        <span>Lesson {lesson.data.lessonNumber}</span>
+                        <span>{lesson.data.difficulty}</span>
+                        <span>
+                          {formatDuration(lesson.data.durationMinutes)}
+                        </span>
+                      </div>
+                      <div class="published-lesson-topics">
+                        {lesson.data.topics.map((topic) => (
+                          <Tag size="sm" variant="outline">
+                            {topic}
+                          </Tag>
+                        ))}
+                      </div>
+                    </Card>
+                  </article>
+                ) : null;
+              })
+            }
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+  </body>
+</html>
+
+<style>
+  .lessons-main {
+    padding-top: 80px;
+  }
+
+  .lessons-hero {
+    padding: var(--space-20) 0 var(--space-16);
+    text-align: center;
+  }
+
+  .lessons-hero .container-narrow {
+    max-width: 760px;
+  }
+
+  .lessons-label,
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+
+  .lessons-label {
+    margin-bottom: var(--space-4);
+  }
+
+  .lessons-label::before,
+  .section-label::before {
+    content: "";
+    width: 24px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-accent), transparent);
+  }
+
+  .lessons-title {
+    margin-bottom: var(--space-5);
+    font-family: var(--font-display);
+    font-size: var(--text-5xl);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--color-text-primary);
+  }
+
+  @media (min-width: 768px) {
+    .lessons-title {
+      font-size: var(--text-6xl);
+    }
+  }
+
+  .lessons-description {
+    max-width: 680px;
+    margin: 0 auto var(--space-8);
+    font-size: var(--text-xl);
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+  }
+
+  .courses-section {
+    padding: var(--space-8) 0 var(--space-20);
+    scroll-margin-top: 80px;
+  }
+
+  .section-heading {
+    display: grid;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+  }
+
+  .section-heading h2 {
+    margin-top: var(--space-3);
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-text-primary);
+  }
+
+  .course-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .course-card {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .course-card {
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  @media (min-width: 768px) {
+    .course-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .course-card-header,
+  .course-card-meta,
+  .course-card-topics {
+    display: flex;
+    align-items: center;
+  }
+
+  .course-card-header {
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+  }
+
+  .course-card-count {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-text-tertiary);
+  }
+
+  .course-card-title {
+    margin-bottom: var(--space-3);
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--color-text-primary);
+  }
+
+  .course-card-description {
+    min-height: 5.2rem;
+    margin: 0;
+    font-size: var(--text-base);
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+  }
+
+  .course-card-meta {
+    flex-wrap: wrap;
+    gap: var(--space-6);
+    margin: var(--space-6) 0;
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-bg-secondary);
+  }
+
+  .course-card-meta div {
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .course-card-meta dt {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+  }
+
+  .course-card-meta dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .course-card-topics {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-6);
+  }
+
+  .course-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-accent);
+  }
+
+  .course-card-link svg {
+    transition: transform var(--transition-fast);
+  }
+
+  .course-card:hover .course-card-link svg {
+    transform: translateX(4px);
+  }
+
+  .published-lessons-section {
+    padding: var(--space-16) 0 var(--space-20);
+    background: var(--color-bg-secondary);
+  }
+
+  .published-lessons-section .section-heading {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 768px) {
+    .published-lessons-section .section-heading {
+      grid-template-columns: 1fr 400px;
+      align-items: end;
+      justify-content: space-between;
+    }
+  }
+
+  .published-lessons-section .section-heading p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+
+  .published-lesson-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 768px) {
+    .published-lesson-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .published-lesson-card {
+    height: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .published-lesson-card {
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  .published-lesson-kicker,
+  .published-lesson-meta,
+  .published-lesson-topics {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .published-lesson-kicker {
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+    color: var(--color-text-tertiary);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .published-lesson-card h3 {
+    margin-bottom: var(--space-3);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .published-lesson-card p {
+    min-height: 3.4rem;
+    margin: 0;
+    color: var(--color-text-secondary);
+    line-height: 1.7;
+  }
+
+  .published-lesson-meta {
+    gap: var(--space-2) var(--space-4);
+    margin: var(--space-6) 0;
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-bg-secondary);
+    color: var(--color-text-tertiary);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .published-lesson-meta span:not(:last-child)::after {
+    margin-left: var(--space-4);
+    content: "·";
+  }
+
+  .published-lesson-topics {
+    gap: var(--space-2);
+  }
+
+  @media print {
+    .published-lessons-section {
+      padding: var(--space-8) 0;
+      background: none;
+    }
+
+    .published-lesson-card {
+      break-inside: avoid;
+      box-shadow: none;
+    }
+
+    .published-lesson-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .published-lesson-card p {
+      min-height: 0;
+    }
+  }
+
+  @media print {
+    .lessons-main {
+      padding-top: 0;
+    }
+
+    .lessons-hero {
+      padding: var(--space-8) 0;
+      text-align: left;
+    }
+
+    .lessons-description {
+      margin-left: 0;
+    }
+
+    .course-card {
+      break-inside: avoid;
+      box-shadow: none;
+    }
+  }
+</style>

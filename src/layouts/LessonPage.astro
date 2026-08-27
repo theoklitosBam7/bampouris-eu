@@ -1,0 +1,1028 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+import BaseHead from "@/components/BaseHead.astro";
+import Footer from "@/components/Footer.astro";
+import FormattedDate from "@/components/FormattedDate.astro";
+import Header from "@/components/Header.astro";
+import SourceList from "@/components/lessons/SourceList.astro";
+import RelatedLinks from "@/components/RelatedLinks.astro";
+import Tag from "@/components/ui/Tag.astro";
+import { LESSON_FEEDBACK_URL } from "@/consts";
+import {
+  type CourseReferenceCapabilities,
+  formatDuration,
+  formatStatus,
+  getCoursePath,
+  getCourseReferencePath,
+  getLessonPath,
+} from "@/utils/lessons";
+
+type Lesson = CollectionEntry<"lessons">;
+
+type Props = {
+  course: CollectionEntry<"courses">;
+  lesson: Lesson;
+  next?: Lesson;
+  previous?: Lesson;
+  referenceCapabilities: CourseReferenceCapabilities;
+  relatedBlogPosts: CollectionEntry<"blog">[];
+};
+
+const {
+  course,
+  lesson,
+  next,
+  previous,
+  referenceCapabilities,
+  relatedBlogPosts,
+} = Astro.props;
+const { data } = lesson;
+const relatedBlogItems = relatedBlogPosts.map((post) => ({
+  description: post.data.description,
+  href: `/blog/${post.id}/`,
+  kind: "Blog article",
+  title: post.data.title,
+}));
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      description={data.description}
+      title={`${data.title} | ${course.data.title}`}
+    />
+  </head>
+  <body class="grain-overlay">
+    <Header />
+
+    <main
+      class="lesson-main"
+      data-course={course.data.slug}
+      data-lesson={data.slug}
+      data-lesson-page
+    >
+      <header class="lesson-hero">
+        <div class="container-narrow">
+          <a class="breadcrumb" href={`/courses/${course.data.slug}/`}>
+            <svg
+              aria-hidden="true"
+              fill="none"
+              height="16"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="16"
+            >
+              <path d="m15 18-6-6 6-6"></path>
+            </svg>
+            {course.data.title}
+          </a>
+
+          <div class="lesson-kicker">
+            <Tag size="sm" variant="accent">{formatStatus(data.status)}</Tag>
+            <span>Lesson {String(data.lessonNumber).padStart(4, "0")}</span>
+            <span aria-hidden="true">·</span>
+            <span>{formatDuration(data.durationMinutes)}</span>
+          </div>
+
+          <h1 class="lesson-title">{data.title}</h1>
+          <p class="lesson-description">{data.description}</p>
+
+          <div aria-label="Topics" class="lesson-topics">
+            {data.topics.map((topic) => <Tag size="sm">{topic}</Tag>)}
+          </div>
+        </div>
+      </header>
+
+      <section aria-label="Lesson details" class="lesson-details-section">
+        <div class="container-wide">
+          <div class="lesson-details-grid">
+            <div class="lesson-facts">
+              <div>
+                <span>Status</span>
+                <strong>{formatStatus(data.status)}</strong>
+              </div>
+              <div>
+                <span>Published</span>
+                <strong>
+                  <FormattedDate date={data.publicationDate} />
+                </strong>
+              </div>
+              <div>
+                <span>Updated</span>
+                <strong>
+                  <FormattedDate date={data.updatedDate} />
+                </strong>
+              </div>
+              <div>
+                <span>Difficulty</span>
+                <strong>{data.difficulty}</strong>
+              </div>
+            </div>
+
+            <div class="lesson-list-card">
+              <h2>Objectives</h2>
+              <ul>
+                {data.objectives.map((objective) => <li>{objective}</li>)}
+              </ul>
+            </div>
+
+            <div class="lesson-list-card">
+              <h2>Prerequisites</h2>
+              {
+                data.prerequisites.length > 0 ? (
+                  <ul>
+                    {data.prerequisites.map((prerequisite) => (
+                      <li>{prerequisite}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No prerequisites.</p>
+                )
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <article class="lesson-article">
+        <div class="container-narrow lesson-body">
+          <slot />
+        </div>
+      </article>
+
+      <section
+        aria-labelledby="lesson-completion-title"
+        class="lesson-completion-section"
+        data-lesson-completion
+      >
+        <div class="container-narrow">
+          <div class="lesson-completion-card">
+            <div>
+              <span class="lesson-interaction-label">Optional progress</span>
+              <h2 id="lesson-completion-title">Lesson completion</h2>
+              <p>
+                Mark this lesson complete. The setting stays in this browser.
+                You do not need an account, and the site does not send it to a
+                server.
+              </p>
+            </div>
+            <button
+              aria-pressed="false"
+              class="lesson-completion-toggle no-print"
+              data-lesson-completion-toggle
+              type="button"
+            >
+              <span data-lesson-completion-label>Mark lesson complete</span>
+            </button>
+            <p
+              aria-live="polite"
+              class="lesson-completion-status"
+              data-lesson-completion-status
+              role="status"
+            >
+              Not marked complete. This setting stays in this browser.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <RelatedLinks
+        heading="Read the longer discussion"
+        headingId="related-blog-title"
+        items={relatedBlogItems}
+        label="Related blog content"
+      />
+
+      <section
+        aria-labelledby="lesson-sources-title"
+        class="lesson-sources-section"
+      >
+        <div class="container-narrow">
+          <div class="lesson-reference-links">
+            {
+              referenceCapabilities.glossary && (
+                <a href={getCourseReferencePath(course.data.slug, "glossary")}>
+                  Open the course glossary
+                </a>
+              )
+            }
+            {
+              referenceCapabilities["further-reading"] && (
+                <a
+                  href={getCourseReferencePath(
+                    course.data.slug,
+                    "further-reading",
+                  )}
+                >
+                  Browse further reading
+                </a>
+              )
+            }
+          </div>
+
+          <div class="lesson-sources">
+            <h2 id="lesson-sources-title">Cited sources for this lesson</h2>
+            <SourceList learnerSources={data.learnerSources} />
+          </div>
+
+          <p class="ai-disclosure">
+            <strong>AI assistance:</strong>
+            {data.aiAssistanceDisclosure}
+          </p>
+
+          <div class="lesson-feedback">
+            <h2>Help improve this lesson</h2>
+            <p>
+              Found an error or have an improvement to suggest? Share it in the
+              public GitHub issue tracker.
+            </p>
+            <a
+              href={LESSON_FEEDBACK_URL}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Report an error or suggest an improvement
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <nav aria-label="Lesson navigation" class="lesson-navigation">
+        <div class="container-wide lesson-navigation-inner">
+          {
+            previous ? (
+              <a
+                class="lesson-navigation-link"
+                href={getLessonPath(course.data.slug, previous.data.slug)}
+              >
+                <span>Previous lesson</span>
+                <strong>{previous.data.title}</strong>
+              </a>
+            ) : (
+              <a
+                class="lesson-navigation-link lesson-navigation-course"
+                href={getCoursePath(course.data.slug)}
+              >
+                <span>Course overview</span>
+                <strong>{course.data.title}</strong>
+              </a>
+            )
+          }
+          {
+            next && (
+              <a
+                class="lesson-navigation-link lesson-navigation-next"
+                href={getLessonPath(course.data.slug, next.data.slug)}
+              >
+                <span>Next lesson</span>
+                <strong>{next.data.title}</strong>
+              </a>
+            )
+          }
+        </div>
+      </nav>
+    </main>
+
+    <Footer />
+
+    <script>
+      import { initializeLessonDemos } from "@/scripts/lessons/demos";
+      import { initializeLessonInteractions } from "@/scripts/lessons/interactions";
+
+      initializeLessonInteractions();
+      initializeLessonDemos();
+    </script>
+  </body>
+</html>
+
+<style>
+  .lesson-main {
+    padding-top: 80px;
+  }
+
+  .lesson-hero {
+    padding: var(--space-12) 0 var(--space-16);
+    background:
+      radial-gradient(
+        circle at 80% 20%,
+        rgba(37, 99, 235, 0.12),
+        transparent 35%
+      ),
+      var(--color-bg-primary);
+  }
+
+  .breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-10);
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  .breadcrumb:hover {
+    color: var(--accent-dark);
+  }
+
+  .lesson-kicker {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+    color: var(--color-text-tertiary);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+  }
+
+  .lesson-title {
+    max-width: 820px;
+    margin-bottom: var(--space-5);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+  }
+
+  @media (min-width: 768px) {
+    .lesson-title {
+      font-size: var(--text-6xl);
+    }
+  }
+
+  .lesson-description {
+    max-width: 760px;
+    margin-bottom: var(--space-6);
+    color: var(--color-text-secondary);
+    font-size: var(--text-xl);
+    line-height: 1.7;
+  }
+
+  .lesson-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .lesson-details-section,
+  .lesson-sources-section {
+    padding: var(--space-12) 0;
+    background: var(--color-bg-secondary);
+  }
+
+  .lesson-details-grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 768px) {
+    .lesson-details-grid {
+      grid-template-columns: 0.8fr 1.2fr 1.2fr;
+      align-items: start;
+    }
+  }
+
+  .lesson-facts,
+  .lesson-list-card {
+    height: 100%;
+    padding: var(--space-6);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--radius-xl);
+    background: var(--color-bg-primary);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .lesson-facts,
+    .lesson-list-card {
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  .lesson-facts {
+    display: grid;
+    align-content: start;
+    gap: var(--space-4);
+  }
+
+  .lesson-facts div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-bg-secondary);
+  }
+
+  .lesson-facts div:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .lesson-facts span {
+    color: var(--color-text-tertiary);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .lesson-facts strong {
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    text-align: right;
+  }
+
+  .lesson-list-card h2,
+  .lesson-sources h2 {
+    margin-bottom: var(--space-4);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+  }
+
+  .lesson-list-card ul,
+  .lesson-sources ul {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    padding-left: var(--space-5);
+  }
+
+  .lesson-list-card li,
+  .lesson-sources :global(li) {
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+    line-height: 1.6;
+  }
+
+  .lesson-list-card p {
+    margin: 0;
+    color: var(--color-text-secondary);
+  }
+
+  .lesson-article {
+    padding: var(--space-16) 0;
+    background: var(--color-bg-primary);
+  }
+
+  .lesson-body {
+    max-width: 820px;
+  }
+
+  .lesson-body :global(h2) {
+    margin-top: var(--space-12);
+    margin-bottom: var(--space-4);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    line-height: 1.2;
+    scroll-margin-top: 100px;
+  }
+
+  .lesson-body :global(h3) {
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    line-height: 1.25;
+  }
+
+  .lesson-body :global(p),
+  .lesson-body :global(li) {
+    color: var(--color-text-secondary);
+    font-size: var(--text-lg);
+    line-height: 1.8;
+  }
+
+  .lesson-body :global(p) {
+    margin-bottom: var(--space-6);
+  }
+
+  .lesson-body :global(ul),
+  .lesson-body :global(ol) {
+    margin-bottom: var(--space-6);
+    padding-left: var(--space-6);
+  }
+
+  .lesson-body :global(li) {
+    margin-bottom: var(--space-2);
+  }
+
+  .lesson-body :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  .lesson-body :global(a:hover) {
+    color: var(--accent-dark);
+  }
+
+  .lesson-body :global(strong) {
+    color: var(--color-text-primary);
+  }
+
+  .lesson-body :global(blockquote) {
+    margin: var(--space-8) 0;
+    padding: var(--space-5) var(--space-6);
+    border-left: 4px solid var(--color-accent);
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    background: var(--color-bg-secondary);
+  }
+
+  .lesson-body :global(blockquote p) {
+    margin: 0;
+    color: var(--color-text-primary);
+  }
+
+  .lesson-body :global(pre) {
+    margin: var(--space-6) 0;
+    border: 1px solid var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-secondary);
+    overflow-x: auto;
+  }
+
+  .lesson-body :global(code) {
+    font-family: var(--font-mono);
+  }
+
+  .lesson-body :global(.lesson-reveal) {
+    margin: var(--space-4) 0;
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-secondary);
+  }
+
+  .lesson-body :global(.lesson-reveal summary) {
+    cursor: pointer;
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+
+  .lesson-body :global(.lesson-reveal p),
+  .lesson-body :global(.lesson-reveal ol) {
+    margin-top: var(--space-4);
+    margin-bottom: 0;
+  }
+
+  .lesson-sources-section {
+    padding-top: var(--space-10);
+  }
+
+  .lesson-reference-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+    margin-bottom: var(--space-10);
+  }
+
+  .lesson-reference-links a {
+    color: var(--color-accent);
+    font-family: var(--font-display);
+    font-weight: 500;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .lesson-sources {
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--color-bg-primary);
+  }
+
+  .lesson-sources :global(li) {
+    list-style: none;
+  }
+
+  .lesson-sources :global(a) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .lesson-sources :global(a:hover),
+  .lesson-reference-links a:hover {
+    color: var(--accent-dark);
+  }
+
+  .lesson-sources :global(svg) {
+    flex: 0 0 auto;
+  }
+
+  .ai-disclosure {
+    max-width: 800px;
+    margin: var(--space-8) auto 0;
+    color: var(--color-text-tertiary);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    text-align: center;
+  }
+
+  .ai-disclosure strong {
+    color: var(--color-text-secondary);
+  }
+
+  .lesson-feedback {
+    margin-top: var(--space-10);
+    padding: var(--space-6);
+    border: 1px solid rgba(37, 99, 235, 0.2);
+    border-radius: var(--radius-xl);
+    background: rgba(37, 99, 235, 0.05);
+  }
+
+  .lesson-feedback h2 {
+    margin-bottom: var(--space-3);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+  }
+
+  .lesson-feedback p {
+    margin-bottom: var(--space-4);
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  .lesson-feedback a {
+    color: var(--color-accent);
+    font-family: var(--font-display);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .lesson-navigation {
+    padding: var(--space-10) 0;
+    border-top: 1px solid var(--color-bg-secondary);
+    background: var(--color-bg-primary);
+  }
+
+  .lesson-navigation-inner {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-6);
+  }
+
+  .lesson-navigation-link {
+    display: grid;
+    gap: var(--space-1);
+    max-width: 45%;
+    color: var(--color-accent);
+  }
+
+  .lesson-navigation-link span {
+    color: var(--color-text-tertiary);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .lesson-navigation-link strong {
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-base);
+  }
+
+  .lesson-navigation-link:hover strong {
+    color: var(--color-accent);
+  }
+
+  .lesson-navigation-next {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  @media (max-width: 639px) {
+    .lesson-navigation-link {
+      max-width: 100%;
+    }
+
+    .lesson-navigation-next {
+      width: 100%;
+    }
+  }
+
+  .lesson-interaction-label,
+  .lesson-body :global(.lesson-interaction-label) {
+    display: block;
+    margin-bottom: var(--space-2);
+    color: var(--color-text-tertiary);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .lesson-body :global(.lesson-quiz),
+  .lesson-body :global(.lesson-demo) {
+    margin: var(--space-10) 0;
+    padding: var(--space-6);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--radius-xl);
+    background: var(--color-bg-secondary);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .lesson-body :global(.lesson-quiz),
+    .lesson-body :global(.lesson-demo),
+    .lesson-completion-card {
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+  }
+
+  .lesson-body :global(.lesson-quiz-title),
+  .lesson-body :global(.lesson-demo-heading h4) {
+    margin: 0 0 var(--space-6);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  .lesson-body :global(.lesson-quiz-question) {
+    margin: 0 0 var(--space-6);
+    padding: 0;
+    border: 0;
+  }
+
+  .lesson-body :global(.lesson-quiz-question:last-of-type) {
+    margin-bottom: 0;
+  }
+
+  .lesson-body :global(.lesson-quiz-question-text) {
+    margin-bottom: var(--space-3);
+    color: var(--color-text-primary);
+    font-size: var(--text-base);
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .lesson-body :global(.lesson-quiz-option) {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    min-height: 2.75rem;
+    margin-bottom: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--color-text-tertiary);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+    line-height: 1.5;
+  }
+
+  .lesson-body :global(.lesson-quiz-option:last-of-type) {
+    margin-bottom: 0;
+  }
+
+  .lesson-body :global(.lesson-quiz-option:hover:not(.is-locked)) {
+    border-color: var(--color-accent);
+    color: var(--color-text-primary);
+  }
+
+  .lesson-body :global(.lesson-quiz-option input) {
+    flex: 0 0 auto;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin: 0.2rem 0 0;
+    accent-color: var(--color-accent);
+  }
+
+  .lesson-body :global(.lesson-quiz-option.is-locked) {
+    cursor: default;
+  }
+
+  .lesson-body :global(.lesson-quiz-option.is-correct) {
+    border-color: var(--color-success, #15803d);
+    background: rgba(21, 128, 61, 0.1);
+  }
+
+  .lesson-body :global(.lesson-quiz-option.is-incorrect) {
+    border-color: var(--color-error, #b91c1c);
+    background: rgba(185, 28, 28, 0.1);
+  }
+
+  .lesson-body :global(.lesson-quiz-option-state) {
+    margin-left: auto;
+    color: var(--color-text-primary);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .lesson-body :global(.lesson-quiz-feedback) {
+    margin: var(--space-4) 0 0;
+    padding-top: var(--space-4);
+    border-top: 1px dashed var(--color-text-tertiary);
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+    line-height: 1.7;
+  }
+
+  .lesson-body :global(.lesson-quiz-score) {
+    margin: var(--space-6) 0 0;
+    color: var(--color-text-primary);
+    font-size: var(--text-base);
+    font-weight: 600;
+    line-height: 1.6;
+  }
+
+  .lesson-body :global(.lesson-quiz-retry),
+  .lesson-body :global(.lesson-demo-controls button),
+  .lesson-completion-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-lg);
+    background: transparent;
+    color: var(--color-accent);
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    line-height: 1.4;
+    transition:
+      background-color var(--transition-fast),
+      color var(--transition-fast),
+      border-color var(--transition-fast);
+  }
+
+  .lesson-body :global(.lesson-quiz-retry) {
+    margin-top: var(--space-4);
+  }
+
+  .lesson-body :global(.lesson-quiz-retry:hover),
+  .lesson-body :global(.lesson-demo-controls button:hover),
+  .lesson-completion-toggle:hover {
+    background: var(--color-accent);
+    color: white;
+  }
+
+  .lesson-body :global(.lesson-quiz-retry:disabled),
+  .lesson-body :global(.lesson-demo-controls button:disabled) {
+    cursor: wait;
+    opacity: 0.6;
+  }
+
+  .lesson-body :global(.lesson-demo-heading h4) {
+    margin-bottom: var(--space-3);
+  }
+
+  .lesson-body :global(.lesson-demo p) {
+    margin-bottom: var(--space-4);
+  }
+
+  .lesson-body :global(.lesson-demo-note) {
+    padding: var(--space-4);
+    border-left: 3px solid var(--color-accent-warm);
+    background: var(--color-bg-primary);
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+    line-height: 1.6;
+  }
+
+  .lesson-body :global(.lesson-demo-controls) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin: var(--space-5) 0;
+  }
+
+  .lesson-body :global(.lesson-demo-output) {
+    margin: var(--space-5) 0 0;
+    padding: var(--space-4);
+    border: 1px solid var(--color-bg-secondary);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: pre-wrap;
+  }
+
+  .lesson-completion-section {
+    padding: var(--space-10) 0;
+    background: var(--color-bg-secondary);
+  }
+
+  .lesson-completion-card {
+    display: grid;
+    gap: var(--space-5);
+    padding: var(--space-6);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: var(--radius-xl);
+    background: var(--color-bg-primary);
+  }
+
+  .lesson-completion-card h2 {
+    margin: 0 0 var(--space-3);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+  }
+
+  .lesson-completion-card p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-base);
+    line-height: 1.6;
+  }
+
+  .lesson-completion-toggle {
+    justify-self: start;
+  }
+
+  .lesson-completion-toggle.is-complete {
+    background: var(--color-accent);
+    color: white;
+  }
+
+  .lesson-completion-status {
+    font-size: var(--text-sm) !important;
+  }
+
+  @media (min-width: 640px) {
+    .lesson-completion-card {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+    }
+
+    .lesson-completion-status {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 639px) {
+    .lesson-body :global(.lesson-demo-controls) {
+      flex-direction: column;
+    }
+
+    .lesson-body :global(.lesson-demo-controls button),
+    .lesson-body :global(.lesson-quiz-retry),
+    .lesson-completion-toggle {
+      width: 100%;
+    }
+  }
+
+  @media print {
+    .lesson-main {
+      padding-top: 0;
+    }
+
+    .lesson-hero,
+    .lesson-details-section,
+    .lesson-article,
+    .lesson-completion-section,
+    .lesson-sources-section,
+    .lesson-navigation {
+      padding: var(--space-8) 0;
+      background: none;
+    }
+
+    .breadcrumb,
+    .lesson-reference-links,
+    .lesson-navigation,
+    .lesson-completion-toggle,
+    .lesson-body :global(.lesson-demo-controls),
+    .lesson-body :global(.lesson-quiz-retry) {
+      display: none;
+    }
+
+    .lesson-facts,
+    .lesson-list-card,
+    .lesson-completion-card,
+    .lesson-body :global(.lesson-quiz),
+    .lesson-body :global(.lesson-demo),
+    .lesson-body :global(pre),
+    .lesson-body :global(.lesson-reveal) {
+      break-inside: avoid;
+      box-shadow: none;
+    }
+  }
+</style>

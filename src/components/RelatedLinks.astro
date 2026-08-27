@@ -1,0 +1,118 @@
+---
+interface Props {
+  heading: string;
+  headingId: string;
+  items: RelatedLink[];
+  label: string;
+}
+
+interface RelatedLink {
+  description: string;
+  href: string;
+  kind: string;
+  title: string;
+}
+
+const { heading, headingId, items, label } = Astro.props;
+---
+
+{
+  items.length > 0 && (
+    <section aria-labelledby={headingId} class="related-links-section">
+      <div class="container-narrow">
+        <span class="section-label">{label}</span>
+        <h2 id={headingId}>{heading}</h2>
+        <div class="related-links-list">
+          {items.map((item) => (
+            <a class="related-links-link" href={item.href}>
+              <span class="related-content-type">{item.kind}</span>
+              <strong>{item.title}</strong>
+              <span>{item.description}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .related-links-section {
+    padding: var(--space-12) 0;
+    background: var(--color-bg-secondary);
+  }
+
+  .related-links-section .section-label {
+    display: inline-flex;
+    margin-bottom: var(--space-3);
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .related-links-section h2 {
+    margin: 0 0 var(--space-6);
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+  }
+
+  .related-links-list {
+    display: grid;
+    gap: var(--space-4);
+  }
+
+  .related-links-link {
+    display: grid;
+    gap: var(--space-2);
+    padding: var(--space-5);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: var(--radius-xl);
+    background: var(--color-bg-primary);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .related-links-link:hover strong {
+    color: var(--color-accent);
+  }
+
+  .related-content-type {
+    color: var(--color-text-tertiary);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .related-links-link strong {
+    color: var(--color-text-primary);
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+  }
+
+  .related-links-link > span:last-child {
+    color: var(--color-text-secondary);
+    line-height: 1.6;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .related-links-link {
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+
+  @media print {
+    .related-links-section {
+      padding: var(--space-8) 0;
+      background: none;
+    }
+
+    .related-links-link {
+      break-inside: avoid;
+      box-shadow: none;
+    }
+  }
+</style>
