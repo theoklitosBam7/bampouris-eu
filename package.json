@@ -3,6 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "private": true,
+  "packageManager": "pnpm@11.24.0",
   "description": "Personal web page/blog of Theoklitos Bampouris",
   "author": {
     "name": "Theoklitos Bampouris",
@@ -60,7 +61,7 @@
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
-      "version": "11.22.0",
+      "version": "11.24.0",
       "onFail": "download"
     }
   }
